@@ -1,0 +1,298 @@
+{% extends 'demo.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="row mh-100 h-100 overflow-auto">
+	<div class="col mh-100 h-100 overflow-auto" id="LeftArea">
+		<div class="cell h-100 d-flex flex-column">
+			<div class="cell-title">
+				<p>텍스트</p>
+				<button id="LoadRandText-Btn" class="btn btn-outline-primary btn-sm d-flex align-items-center">
+					<span class="btn-text"><i class="far fa-copy"></i> 지문 불러오기</span>
+					<span class="spinner-border spinner-border-sm d-none"></span>
+					<span class="spinner-text d-none">&nbsp;불러오는 중...</span>
+				</button>
+			</div>
+			<div class="cell-content form-group flex-grow-1">
+				<textarea id="Text" spellcheck="false" class="form-control border border-dark"></textarea>
+			</div>
+			<input type="hidden" id="TextID" value="">
+		</div>
+	</div>
+	<div class="col mh-100 h-100 overflow-auto" id="RightArea">
+		<div class="cell">
+			<div class="cell-title">
+				<p>문제 유형</p>
+			</div>
+			<div class="cell-content">
+				<div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+					<label class="btn btn-outline-dark flex-even active">
+						<input type="radio" name="QType" value="0" id="QType-OX" checked>O/X 문제
+					</label>
+					<label class="btn btn-outline-dark flex-even">
+						<input type="radio" name="QType" value="1" id="QType-Choice">객관식 문제
+					</label>
+					<label class="btn btn-outline-dark flex-even">
+						<input type="radio" name="QType" value="2" id="QType-ShortAnswer">주관식 문제
+					</label>
+				</div>
+			</div>
+			<input type="hidden" id="QType" value="-1">
+		</div>
+
+		<div class="cell">
+			<div class="cell-title">
+				<p>질문</p>
+				<div>
+					<button id="LoadRandQA-Matched-Btn" type="button" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center">
+						<span class="btn-text">연관 문제 불러오기</span>
+						<span class="spinner-border spinner-border-sm d-none"></span>
+						<span class="spinner-text d-none">&nbsp;불러오는 중...</span>
+					</button>
+					<button id="LoadRandQA-Unmatched-Btn" type="button" class="btn btn-outline-primary btn-sm d-inline-flex align-items-center">
+						<span class="btn-text">비연관 문제 불러오기</span>
+						<span class="spinner-border spinner-border-sm d-none"></span>
+						<span class="spinner-text d-none">&nbsp;불러오는 중...</span>
+					</button>
+				</div>
+			</div>
+			<div class="cell-content">
+				<input type="text" id="Question" class="form-control border border-dark">
+			</div>
+
+			<input type="hidden" id="QAID" value="">
+			<input type="hidden" id="QType2" value="">
+			<input type="hidden" id="TrueAnswer" value="">
+		</div>
+
+		<div class="cell u-ans-cell ans-cell-ox" id="UAnsCell-OX">
+			<div class="cell-title">
+				<p>정답</p>
+			</div>
+			<div class="cell-content btn-group btn-group-toggle d-flex" data-toggle="buttons">
+				<label class="btn btn-outline-dark flex-even">
+					<input type="radio" name="UAns-OX" id="UAns-O">O
+				</label>
+				<label class="btn btn-outline-dark flex-even">
+					<input type="radio" name="UAns-OX" id="UAns-X">X
+				</label>
+			</div>
+		</div>
+
+		<div class="cell u-ans-cell ans-cell-choice d-none" id="UAnsCell-Choice">
+			<div class="cell-title">
+				<p>정답</p>
+			</div>
+			<div class="cell-content">
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<input type="radio" name="UAns-Choice" id="UAns-Choice-1">
+						</div>
+						<span class="input-group-text">1</span>
+					</div>
+					<input type="text" class="form-control" id="UAns-Choice-1-Text">
+				</div>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<input type="radio" name="UAns-Choice" id="UAns-Choice-2">
+						</div>
+						<span class="input-group-text">2</span>
+					</div>
+					<input type="text" class="form-control" id="UAns-Choice-2-Text">
+				</div>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<input type="radio" name="UAns-Choice" id="UAns-Choice-3">
+						</div>
+						<span class="input-group-text">3</span>
+					</div>
+					<input type="text" class="form-control" id="UAns-Choice-3-Text">
+				</div>
+				<div class="input-group">
+					<div class="input-group-prepend">
+						<div class="input-group-text">
+							<input type="radio" name="UAns-Choice" id="UAns-Choice-4">
+						</div>
+						<span class="input-group-text">4</span>
+					</div>
+					<input type="text" class="form-control" id="UAns-Choice-4-Text">
+				</div>
+			</div>
+		</div>
+
+		<div class="cell u-ans-cell ans-cell-short-answer d-none" id="UAnsCell-ShortAnswer">
+			<div class="cell-title">
+				<p>정답</p>
+			</div>
+			<div class="cell-content form-group">
+				<input type="text" id="UAns-ShortAnswer" class="form-control border border-dark">
+			</div>
+		</div>
+
+		<div class="cell d-flex justify-content-end">
+			<button type="button" id="Submit-Btn" class="btn btn-primary d-flex align-items-center">
+				<span class="btn-text">AI 분석</span>
+				<span class="spinner-border spinner-border-sm d-none"></span>
+				<span class="spinner-text d-none">&nbsp;분석 중...</span>
+			</button>
+		</div>
+		
+		<div class="cell border border-success rounded p-2" id="ResultCell-Success">
+			<div class="cell-title">
+				<p>분석 결과</p>
+			</div>
+
+			<div class="cell-content">
+				<div class="cell b-ans-cell ans-cell-ox" id="BAnsCell-OX">
+					<div class="cell-title">
+						<p>BERT가 추론한 답</p>
+					</div>
+					<div class="cell-content btn-group btn-group-toggle d-flex" data-toggle="buttons">
+						<label class="btn btn-outline-dark flex-even">
+							<input type="radio" name="BAns-OX" id="BAns-O" disabled>O
+						</label>
+						<label class="btn btn-outline-dark flex-even">
+							<input type="radio" name="BAns-OX" id="BAns-X" disabled>X
+						</label>
+					</div>
+				</div>
+		
+				<div class="cell b-ans-cell ans-cell-choice" id="BAnsCell-Choice">
+					<div class="cell-title">
+						<p>BERT가 추론한 답</p>
+					</div>
+					<div class="cell-content">
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="BAns-Choice" id="BAns-Choice-1" disabled>
+								</div>
+								<span class="input-group-text">1</span>
+							</div>
+							<input type="text" class="form-control" id="BAns-Choice-1-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="BAns-Choice" id="BAns-Choice-2" disabled>
+								</div>
+								<span class="input-group-text">2</span>
+							</div>
+							<input type="text" class="form-control" id="BAns-Choice-2-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="BAns-Choice" id="BAns-Choice-3" disabled>
+								</div>
+								<span class="input-group-text">3</span>
+							</div>
+							<input type="text" class="form-control" id="BAns-Choice-3-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="BAns-Choice" id="BAns-Choice-4" disabled>
+								</div>
+								<span class="input-group-text">4</span>
+							</div>
+							<input type="text" class="form-control" id="BAns-Choice-4-Text" disabled>
+						</div>
+					</div>
+				</div>
+		
+				<div class="cell b-ans-cell ans-cell-short-answer" id="BAnsCell-ShortAnswer">
+					<div class="cell-title">
+						<p>BERT가 추론한 답</p>
+					</div>
+					<div class="cell-content form-group">
+						<input type="text" id="BAns-ShortAnswer" class="form-control border border-dark" disabled>
+					</div>
+				</div>
+
+				<div class="cell g-ans-cell ans-cell-ox" id="GAnsCell-OX">
+					<div class="cell-title">
+						<p>진짜 정답</p>
+					</div>
+					<div class="cell-content btn-group btn-group-toggle d-flex" data-toggle="buttons">
+						<label class="btn btn-outline-dark flex-even">
+							<input type="radio" name="GAns-OX" id="GAns-O" disabled>O
+						</label>
+						<label class="btn btn-outline-dark flex-even">
+							<input type="radio" name="GAns-OX" id="GAns-X" disabled>X
+						</label>
+					</div>
+				</div>
+		
+				<div class="cell g-ans-cell ans-cell-choice" id="GroundAnsCell-Choice">
+					<div class="cell-title">
+						<p>진짜 정답</p>
+					</div>
+					<div class="cell-content">
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="GAns-Choice" id="GAns-Choice-1" disabled>
+								</div>
+								<span class="input-group-text">1</span>
+							</div>
+							<input type="text" class="form-control" id="GAns-Choice-1-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="GAns-Choice" id="GAns-Choice-2" disabled>
+								</div>
+								<span class="input-group-text">2</span>
+							</div>
+							<input type="text" class="form-control" id="GAns-Choice-2-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="GAns-Choice" id="GAns-Choice-3" disabled>
+								</div>
+								<span class="input-group-text">3</span>
+							</div>
+							<input type="text" class="form-control" id="GAns-Choice-3-Text" disabled>
+						</div>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<div class="input-group-text">
+									<input type="radio" name="GAns-Choice" id="GAns-Choice-4" disabled>
+								</div>
+								<span class="input-group-text">4</span>
+							</div>
+							<input type="text" class="form-control" id="GAns-Choice-4-Text" disabled>
+						</div>
+					</div>
+				</div>
+		
+				<div class="cell g-ans-cell ans-cell-short-answer" id="GroundAnsCell-ShortAnswer">
+					<div class="cell-title">
+						<p>진짜 정답</p>
+					</div>
+					<div class="cell-content form-group">
+						<input type="text" id="GAns-ShortAnswer" class="form-control border border-dark" disabled>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="cell border border-danger rounded p-2" id="ResultCell-Failed">
+			<div class="cell-title">
+				<p>분석 실패</p>
+			</div>
+
+			<div class="cell-content"></div>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'js/qna_valid_chk.js' %}"></script>
+
+{% endblock content %}

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% include 'includes/head.html' %}
+</head>
+<body>
+    <div class="container-fluid h-100 d-flex flex-column">
+        {% include 'includes/header.html' %}
+
+        <div class="content flex-column justify-content-center flex-grow-1">
+            {% block content %}
+            {% endblock content %}
+        </div> 
+    </div>
+</body>
+</html>
