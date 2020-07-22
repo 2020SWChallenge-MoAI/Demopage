@@ -8,10 +8,10 @@
 from django.db import models
 
 
-class Text(models.Model):
-    title = models.CharField(unique=True, max_length=100, blank=True, null=True)
-    text = models.TextField(blank=True, null=True)
+class Book(models.Model):
+    title = models.CharField(unique=True, max_length=100, blank=True)
+    author = models.CharField(max_length=30, blank=True)
+    content = models.TextField(blank=True)
 
     class Meta:
-        managed = False
-        db_table = 'Text'
+        db_table = 'Book'
