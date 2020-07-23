@@ -2,8 +2,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Book
-from .serializer import (
+from api.models import Book
+from api.serializer import (
     BookSerializer,
     BookDetailSerializer,
 )
@@ -20,29 +20,15 @@ def book_list(request):
 
 
 @api_view(['GET', 'POST'])
-def book_detail(request, pk):
+def book_detail(request, book_id):
     """
-    :param pk: Book id
-    :return: All info of the Book
+    All info of the Book ( including content )
     """
     try:
-        # pk: primary key
-        book = Book.objects.get(pk=pk)
+        book = Book.objects.get(pk=book_id)
     except Book.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = BookDetailSerializer(book)
         return Response(serializer.data)
-
-    # elif request.method == 'POST':
-    #     serializer = BookDetailSerializer(book, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #     return Response(serializer.data)
-
-
-@api_view(['GET'])
-def get_keywords(request):
-    parents = request.data
-    pass
