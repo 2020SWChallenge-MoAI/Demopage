@@ -7,7 +7,8 @@ SECRET_KEY = 'qjth*nwqf#lc9koap44-5c%m!*g3f6vjv98vnki#0g%ie_^jny'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "172.26.0.1"
+    "172.26.0.1",
+    "127.0.0.1"
 ]
 
 # Application definition
@@ -18,7 +19,8 @@ INSTALLED_APPS = [
     'home',
     'keyword_ext',
     'qna_valid_chk',
-    'api'
+    'rest_framework',
+    'api.apps.ApiConfig'
 ]
 
 MIDDLEWARE = [
@@ -55,9 +57,9 @@ WSGI_APPLICATION = 'nlp_server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'NLP_Server',
-        'USER': 'django_nlp_server',
-        'PASSWORD': 'heekang',
+        'NAME': 'ttokdok',
+        'USER': 'whitedelay',
+        'PASSWORD': 'jiyeon',
         'PORT': '3306',
         'HOST': '127.0.0.1',
         'OPTIONS': {
