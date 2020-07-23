@@ -55,8 +55,15 @@ WSGI_APPLICATION = 'nlp_server.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'NLP_Server',
+        'USER': 'django_nlp_server',
+        'PASSWORD': 'heekang',
+        'PORT': '3306',
+        'HOST': '127.0.0.1',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
 
