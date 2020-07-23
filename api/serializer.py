@@ -21,11 +21,14 @@ class MindMapSerializer(serializers.ModelSerializer):
         model = MindMap
         fields = '__all__'
 
+
 class EssayQnASerializer(serializers.ModelSerializer):
     class Meta:
         model = EssayQnA
+        fields = '__all__'
 
 
 class ChoiceQnASerializer(serializers.ModelSerializer):
     class Meta:
         model = ChoiceQnA
+        fields = '__all__'
