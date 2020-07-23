@@ -22,6 +22,7 @@ class EssayQnA(models.Model):
 class ChoiceQnA(models.Model):
     book_id = models.PositiveIntegerField()
     question = models.TextField()
+    options = models.TextField()
     answer = models.SmallIntegerField()
 
     class Meta:

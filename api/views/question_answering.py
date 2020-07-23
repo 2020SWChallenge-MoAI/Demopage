@@ -1,5 +1,4 @@
 import json
-from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from api.models import ChoiceQnA, EssayQnA, Book
@@ -8,9 +7,14 @@ from api.serializer import (
     EssayQnASerializer,
 )
 
+from question_answering import KoELECTRA
+from question_answering import f1_score, exact_match_score
+
+electra = KoELECTRA("monologg/koelectra-base-v2-finetuned-korquad")
+
 QUESTION_TYPE = {
-    'CHOICE': 1,
-    'ESSAY': 2
+    'CHOICE': 0,
+    'ESSAY': 1
 }
 
 
@@ -20,8 +24,7 @@ def valid_check(request):
 
     content = Book.objects.get(pk=request['book_id']).content
     question = request['question']
-
-    score = valid_check(content, question)['score']
+    score = electra.get_answer(context=content, question=question,)[0]['score']
     valid = True if score >= 0.85 else False
     return Response({'valid': valid})
 
@@ -31,37 +34,28 @@ def verify_answer(request):
     request = json.loads(request.body)
     content = Book.objects.get(pk=request['book_id']).content
     question = request['question']
-    user_answers = request['user_answer']
-    # ai_answer = get_answer(content, question)
+    ai_outputs = electra.get_answer(question=question, context=content, topk=1)
+    ai_option = ai_outputs[0]['answer']
 
     if request['question_type'] == QUESTION_TYPE['CHOICE']:
         scores = []
-        for answer in user_answers:
-            # scores.append(calculate_similarity(ai_answer, answer))
-            pass
-        ai_choice = [i for i, s in enumerate(scores) if s == max(scores)]
-        valid = True if ai_choice == request['user_answer'] else False
-
+        for option in request['user_options']:
+            scores.append(f1_score(ai_option, option))
+        ai_answer = [i for i, s in enumerate(scores) if s == max(scores)]
+        valid = True if ai_answer == int(request['user_answer']) else False
         return Response({'valid': valid})
 
-
-    elif request['question_type'] == QUESTION_TYPE['ESSAY']:
-        user_answer = request['user_answer'][0]
-        # score = calculate_similarity(ai_answer, answer)
-        # valid = True if score >= 0.8 else False
-        # return Response({'valid': valid})
-        pass
+    else:
+        score = f1_score(ai_option, request['user_answer'])
+        valid = True if score >= 0.5 else False
+        return Response({'valid': valid,'question':question, 'ai_outputs': ai_outputs})
 
 
 @api_view(['GET'])
 def random_qna(request, qtype):
-    models = [ChoiceQnA, EssayQnA]
-    serializers = [ChoiceQnASerializer, EssayQnASerializer]
-
-    qna = models[qtype].object.order_by('?').fisrt()
-    if qna is None:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+    models = (ChoiceQnA, EssayQnA,)
+    serializers = (ChoiceQnASerializer, EssayQnASerializer,)
+    qna = models[qtype].objects.order_by('?').first()
     serializer = serializers[qtype](qna)
 
     return Response(serializer.data)
-

@@ -11,9 +11,6 @@ from api.serializer import (
 
 @api_view(['GET'])
 def book_list(request):
-    """
-    List simple info of all books
-    """
     books = Book.objects.all()
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
@@ -21,9 +18,6 @@ def book_list(request):
 
 @api_view(['GET', 'POST'])
 def book_detail(request, book_id):
-    """
-    All info of the Book ( including content )
-    """
     try:
         book = Book.objects.get(pk=book_id)
     except Book.DoesNotExist:

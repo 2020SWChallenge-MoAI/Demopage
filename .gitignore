@@ -1,3 +1,7 @@
+api/migrations/
+
+data_handler/data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -137,5 +141,14 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+.idea/.gitignore
+.idea/demo-webserver.iml
+.idea/inspectionProfiles/
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+
+
 # Ignore IDE settings
 .vscode
+
