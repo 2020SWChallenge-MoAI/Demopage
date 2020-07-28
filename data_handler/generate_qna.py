@@ -1,6 +1,15 @@
 import json
-from data_handler import db
 
+import pymysql
+
+db = pymysql.connect(
+    host='localhost',
+    port=3306,
+    user='moai',
+    passwd='moai',
+    db='ttokdok',
+    charset='utf8'
+)
 
 with open('data/qna_samples.txt', 'r') as f:
     samples = json.load(f)['data']

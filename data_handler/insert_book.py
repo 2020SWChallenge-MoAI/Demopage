@@ -1,7 +1,17 @@
 import re
 import os
 from os.path import join
-from data_handler import db
+
+import pymysql
+
+db = pymysql.connect(
+    host='localhost',
+    port=3306,
+    user='moai',
+    passwd='moai',
+    db='ttokdok',
+    charset='utf8'
+)
 
 
 def convert_book1():
@@ -59,18 +69,18 @@ def convert_book2():
 
 
 def insert_to_Book(titles, authors, contents):
-    try:
-        with db.cursor() as cursor:
-            for title, author, content in zip(titles, authors, contents):
-                sql = '''
-                    INSERT INTO book(title, author, content) \
-                    VALUES ( %s, %s, %s); \
-                '''
-                cursor.execute(sql, (title, author, content))
+    #try:
+    with db.cursor() as cursor:
+        for title, author, content in zip(titles, authors, contents):
+            sql = '''
+                INSERT INTO book(title, author, content) \
+                VALUES ( %s, %s, %s); \
+            '''
+            cursor.execute(sql, (title, author, content))
 
-            db.commit()
-    finally:
-        db.close()
+        db.commit()
+    #finally:
+        #db.close()
 
 
 if __name__ == '__main__':

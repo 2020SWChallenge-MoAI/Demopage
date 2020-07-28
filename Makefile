@@ -1,4 +1,4 @@
-.PHONY: install clean migrate
+.PHONY: install clean migrate run
 
 
 install:
@@ -11,3 +11,6 @@ clean:
 migrate:
 	python manage.py makemigrations
 	python manage.py migrate
+
+run:
+	python manage.py runserver 0.0.0.0:9000

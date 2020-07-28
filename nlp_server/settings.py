@@ -7,8 +7,7 @@ SECRET_KEY = 'qjth*nwqf#lc9koap44-5c%m!*g3f6vjv98vnki#0g%ie_^jny'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "172.26.0.1"
-    "localhost"
+    "*"
 ]
 
 # Application definition
@@ -20,14 +19,16 @@ INSTALLED_APPS = [
     'keyword_ext',
     'qna_valid_chk',
     'rest_framework',
-    'api.apps.ApiConfig'
+    'api',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
 
 ROOT_URLCONF = 'nlp_server.urls'
@@ -58,8 +59,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ttokdok',
-        'USER': 'whitedelay',
-        'PASSWORD': 'jiyeon',
+        'USER': 'moai',
+        'PASSWORD': 'moai',
         'PORT': '3306',
         'HOST': '127.0.0.1',
         'OPTIONS': {
@@ -81,3 +82,5 @@ STATIC_URL = '/assets/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'assets')
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True

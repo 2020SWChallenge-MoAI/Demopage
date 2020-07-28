@@ -1,12 +1,10 @@
-import pymysql
-from nlp_server import settings
+#import pymysql
 
-DEFAULT_SETTINGS = settings.DATABASES['default']
-db = pymysql.connect(
-    host=DEFAULT_SETTINGS['HOST'],
-    port=int(DEFAULT_SETTINGS['PORT']),
-    user=DEFAULT_SETTINGS['USER'],
-    passwd=DEFAULT_SETTINGS['PASSWORD'],
-    db=DEFAULT_SETTINGS['NAME'],
-    charset='utf8'
-)
+#db = pymysql.connect(
+#    host='localhost',
+#    port=3306,
+#    user='moai',
+#    passwd='moai',
+#    db='ttokdok',
+#    charset='utf8'
+#)
