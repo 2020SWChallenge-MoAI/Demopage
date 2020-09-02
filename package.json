@@ -1,0 +1,19 @@
+{
+  "name": "demo-webserver",
+  "version": "1.0.0",
+  "description": "a demo webserver for ttokdok",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2020SWChallenge-MoAI/demo-webserver.git"
+  },
+  "author": "moai",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/2020SWChallenge-MoAI/demo-webserver/issues"
+  },
+  "homepage": "https://github.com/2020SWChallenge-MoAI/demo-webserver#readme"
+}
