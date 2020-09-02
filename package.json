@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/2020SWChallenge-MoAI/demo-webserver/issues"
   },
-  "homepage": "https://github.com/2020SWChallenge-MoAI/demo-webserver#readme"
+  "homepage": "https://github.com/2020SWChallenge-MoAI/demo-webserver#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
