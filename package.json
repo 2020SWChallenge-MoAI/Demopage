@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/2020SWChallenge-MoAI/demo-webserver#readme",
   "dependencies": {
+    "ejs-locals": "^1.0.2",
     "express": "^4.17.1"
   }
 }
