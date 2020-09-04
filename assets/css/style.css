@@ -1,3 +1,7 @@
+html {
+    height: 100%;
+}
+
 body {
     height: 100%;
     max-height: 100%;
@@ -45,6 +49,10 @@ div.content > div.row > div.col {
     flex: 2;
 }
 
+.d-flex > .flex-even {
+    flex: 1;
+}
+
 .content {
     padding: 15px;
 }
@@ -89,6 +97,10 @@ div.content > div.row > div.col {
 
 .ans-cell-choice .cell-content > div:last-of-type {
     margin-bottom: 0px;
+}
+
+#ResultCell-Success > div.cell-content {
+    margin-top: 10px;
 }
 
 .b-ans-cell.ans-cell-ox .cell-content label,
