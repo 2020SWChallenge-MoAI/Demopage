@@ -103,8 +103,9 @@ div.content > div.row > div.col {
     margin-top: 10px;
 }
 
-.b-ans-cell.ans-cell-ox .cell-content label,
-.g-ans-cell.ans-cell-ox .cell-content label {
+div.cell div.cell-content pre {
     background-color: #e9ecef;
-    pointer-events: none;
+    padding: 0.375rem 0.75rem;
+    border: 1px solid #343a40;
+    border-radius: 0.25rem;
 }

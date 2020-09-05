@@ -17,11 +17,37 @@ $("input:radio[name=QType]").click(function () {
 
     target.removeClass("d-none");
     $("#QType").val(checked_val);
+
+    $("#Question").val("");
+    $("#QAID").val("-1");
+    $("#QType2").val("-1");
+    $("#TrueAnswer").val("-1");
+    $("#UAns-Choice-1-Text").val("");
+    $("#UAns-Choice-2-Text").val("");
+    $("#UAns-Choice-3-Text").val("");
+    $("#UAns-Choice-4-Text").val("");
+    $("#UAns-Choice-1").attr("checked", false);
+    $("#UAns-Choice-2").attr("checked", false);
+    $("#UAns-Choice-3").attr("checked", false);
+    $("#UAns-Choice-4").attr("checked", false);
+    $("#UAns-ShortAnswer").val("");
+    $("#ResultCell-Success").addClass("d-none");
+    $("#GroundAnsCell").addClass("d-none");
+    $("#ResultCell-Failed").addClass("d-none");
 });
 
 $("#LoadRandQA-Matched-Btn").click(function () {
     var bid = $("#BID").val();
-    var qtype = $("#QType").val();
+    if(bid === undefined || bid == -1) {
+        alert("도서를 불러와 주세요.");
+        return;
+    }
+
+    var qtype = Number($("#QType").val());
+    if(qtype === undefined || ![1, 2].includes(qtype)) {
+        alert("문제 유형이 잘못되었습니다.");
+        return;
+    }
 
     $.ajax({
         url: "/api/data/" + bid + "/" + qtype + "/randmatched",
@@ -73,7 +99,16 @@ $("#LoadRandQA-Matched-Btn").click(function () {
 
 $("#LoadRandQA-Unmatched-Btn").click(function () {
     var bid = $("#BID").val();
-    var qtype = $("#QType").val();
+    if(bid === undefined || bid == -1) {
+        alert("도서를 불러와 주세요.");
+        return;
+    }
+
+    var qtype = Number($("#QType").val());
+    if(qtype === undefined || ![1, 2].includes(qtype)) {
+        alert("문제 유형이 잘못되었습니다.");
+        return;
+    }
 
     $.ajax({
         url: "/api/data/" + bid + "/" + qtype + "/randunmatched",
@@ -130,16 +165,19 @@ $("#Question, #UAns-Choice-1-Text, #UAns-Choice-2-Text, #UAns-Choice-3-Text, #UA
 $("#Submit-Btn").click(function () {
     var text = $("#Text").val();
     if(text === undefined || text.length == 0){
+        alert("Text가 입력되지 않았습니다.");
         return;
     }
 
-    var qtype = $("#QType").val();
-    if(qtype === undefined || ![1, 2].includes(Number(qtype))) {
+    var qtype = Number($("#QType").val());
+    if(qtype === undefined || ![1, 2].includes(qtype)) {
+        alert("문제 유형이 잘못되었습니다.");
         return;
     }
 
     var question = $("#Question").val();
     if(question === undefined || question.length == 0) {
+        alert("Question이 입력되지 않았습니다.");
         return;
     }
 
@@ -149,18 +187,21 @@ $("#Submit-Btn").click(function () {
         for(var i = 1; i <= 4; i++) {
             var choice = $("#UAns-Choice-" + i + "-Text").val();
             if(choice === undefined || choice.length == 0) {
+                alert("Choice " + i + "가 입력되지 않았습니다.");
                 return;
             }
 
             choices.push(choice);
         }
-        answer = $("input:radio[name=UAns-Choice]:checked").val();
-        if(answer === undefined || ![1, 2, 3, 4].includes(Number(answer))) {
+        answer = Number($("input:radio[name=UAns-Choice]:checked").val());
+        if(answer === undefined || ![1, 2, 3, 4].includes(answer)) {
+            alert("Choice가 선택되지 않았습니다.");
             return;
         }
     } else if (qtype == 2) { //주관식
         answer = $("#UAns-ShortAnswer").val();
         if(answer === undefined || answer.length == 0) {
+            alert("Answer가 입력되지 않았습니다.");
             return;
         }
     }
@@ -218,6 +259,5 @@ $("#Submit-Btn").click(function () {
             $("#UAns-Choice-4-Text").attr("disabled", false);
             $("#UAns-ShortAnswer").attr("disabled", false);
         }
-
     })
 });

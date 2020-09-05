@@ -88,11 +88,45 @@ router.post("/qna-valid-chk", function(req, res, next) {
     var choices = req.body.choices;
     var answer = req.body.answer;
 
-    utils.log(logger_caller, "", logger_args);
+    utils.log(logger_caller, "Success", logger_args);
     return res.status(200).json({
         bert_answer: "BERT-Answer",
         confidence: 0.8,
         similarity: 0.7
+    });
+});
+
+router.post("/keyword-ext", function(req, res, next) {
+    var logger_caller = "/api/keyword-ext(POST)";
+    var logger_args = { text: req.body.text };
+
+    utils.log(logger_caller, "Success", logger_args);
+    return res.status(200).json({
+        keywords: [
+            "keyword-1",
+            "keyword-2",
+            "keyword-3"
+        ],
+        main_sentences: [
+            "main-sentence-1",
+            "main-sentence-2",
+            "main-sentence-3"
+        ],
+        has_ground_truth: true,
+        keyword_accuracy: 0.8,
+        main_sentence_accuracy: 0.7,
+        ground_truth: {
+            keywords: [
+                "ground-truth-keyword-1",
+                "ground-truth-keyword-2",
+                "ground-truth-keyword-3"
+            ],
+            main_sentences: [
+                "ground-truth-main-sentence-1",
+                "ground-truth-main-sentence-2",
+                "ground-truth-main-sentence-3"
+            ]
+        }
     });
 });
 

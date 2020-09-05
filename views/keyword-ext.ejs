@@ -2,48 +2,84 @@
 <div class="row mh-100 h-100 overflow-auto">
 	<%- partial("includes/left") %>
     <div class="col mh-100 h-100 overflow-auto" id="RightArea">
-		<form id="form-query" action="" method="post">
-			{% csrf_token %}
-			<div class="cell">
-				<div class="cell-title">
-					<p>키워드 목록 (쉼표로 구분)</p>
+		<div class="cell d-flex justify-content-end">
+			<button type="button" id="Submit-Btn" class="btn btn-primary d-flex align-items-center">
+				<span class="btn-text">AI 분석</span>
+				<span class="spinner-border spinner-border-sm d-none"></span>
+				<span class="spinner-text d-none">&nbsp;분석 중...</span>
+			</button>
+		</div>
+
+		<div class="cell border border-success rounded p-2 d-none" id="ResultCell-Success">
+			<div class="cell-title">
+				<p>분석 결과</p>
+			</div>
+
+			<div class="cell-content">
+				<div class="cell" id="KeywordCell">
+					<div class="cell-title">
+						<p>키워드</p>
+					</div>
+					<div class="cell-content">
+						<pre id="Keyword"></pre>
+					</div>
 				</div>
-				<div class="cell-content">
-					<input type="text" name="keywords" class="form-control border border-dark">
+
+				<div class="cell" id="MainSentenceCell">
+					<div class="cell-title">
+						<p>핵심 문장</p>
+					</div>
+					<div class="cell-content">
+						<pre id="MainSentence"></pre>
+					</div>
+				</div>
+
+				<div class="cell" id="GroundTruthKeywordCell">
+					<div class="cell-title">
+						<p>키워드 정답</p>
+					</div>
+					<div class="cell-content">
+						<pre id="GroundTruthKeyword"></pre>
+					</div>
+				</div>
+
+				<div class="cell" id="GroundTruthMainSentenceCell">
+					<div class="cell-title">
+						<p>핵심 문장 정답</p>
+					</div>
+					<div class="cell-content">
+						<pre id="GroundTruthMainSentence"></pre>
+					</div>
+				</div>
+
+				<div class="cell" id="KeywordAccuracyCell">
+					<div class="cell-title">
+						<p>키워드 정확도</p>
+					</div>
+					<div class="cell-content form-group">
+						<input type="text" id="KeywordAccuracy" class="form-control border border-dark" disabled>
+					</div>
+				</div>
+
+				<div class="cell" id="MainSentenceAccuracyCell">
+					<div class="cell-title">
+						<p>핵심 문장 정확도</p>
+					</div>
+					<div class="cell-content form-group">
+						<input type="text" id="MainSentenceAccuracy" class="form-control border border-dark" disabled>
+					</div>
 				</div>
 			</div>
-			<div class="cell d-flex justify-content-end">
-				<button type="submit" id="submit-button" class="btn btn-primary d-flex align-items-center">
-					<span class="btn-text">AI 분석</span>
-					<span class="spinner-border spinner-border-sm d-none"></span>
-					<span class="spinner-text d-none">&nbsp;분석 중...</span>
-				</button>
+		</div>
+
+		<div class="cell border border-danger rounded p-2 d-none" id="ResultCell-Failed">
+			<div class="cell-title">
+				<p>분석 실패</p>
 			</div>
-			{# return value section start #}
-			{% if success %}
-			<div class="cell border border-success rounded p-2" id="cell-result">
-				<div class="cell-title">
-					<p>분석 결과</p>
-				</div>
-				<div class="cell-content">
-				<ul class="list-group">
-					{% for keyword in keywords %}
-					<li class="list-group-item">{{ keyword.name }}: {{ keyword.type }}</li>
-					{% endfor %}
-				</ul>
-				</div>
-			</div>
-			{% elif success is not None %}
-			<div class="cell border border-danger rounded p-2" id="cell-result">
-				<div class="cell-title">
-					<p>분석 실패</p>
-				</div>
-				<div class="cell-content"></div>
-			</div>
-			{% else %}
-			{# no return value #}
-			{% endif %}
-			{# return value section end #}
-		</form>
+
+			<div class="cell-content"></div>
+		</div>
 	</div>
 </div>
+
+<script src="/js/keyword-ext.js"></script>
