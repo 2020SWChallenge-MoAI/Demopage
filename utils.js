@@ -3,6 +3,16 @@ var moment = require("moment-timezone");
 moment.tz.setDefault("Asia/Seoul");
 
 module.exports.log = function (caller, msg, args, msg_color) {
+    var STR_MAX_LEN = 20;
+
+    for(var key in args) {
+        if(typeof args[key] === 'string') {
+            if(args[key].length > STR_MAX_LEN) {
+                args[key] = args[key].substring(0, STR_MAX_LEN) + "...";
+            }
+        }
+    }
+
     var date = moment().format("YYYY-MM-DD HH:mm:ss");
 
     switch (msg_color) {

@@ -1,21 +1,32 @@
 var express = require("express");
+var mysql = require("mysql");
+var sync_mysql = require("sync-mysql");
 var router = express.Router();
+
+var connection = new sync_mysql(require("./dbconfig"));
 
 var utils = require("./utils");
 
 router.get("/data/randtext", function(req, res, next) {
     var logger_caller = "/api/data/randtext(GET)";
     var logger_args = {};
+    
+    try {
+        var qresult = connection.query("SELECT bid, text FROM Book ORDER BY rand() LIMIT 1");
+        if (qresult.length == 0) throw new Error("No Entry");
 
-    utils.log(logger_caller, "Success", logger_args);
-    return res.status(200).json({
-        bid: 123456789,
-        title: "RandText - Title",
-        author: "RandText - Author",
-        publisher: "RandText - Publisher",
-        year: "RandText - Year",
-        text: "RandText - Text"
-    });
+        utils.log(logger_caller, "Success", logger_args);
+        return res.status(200).json({
+            bid: qresult[0]["bid"],
+            text: qresult[0]["text"]
+        });
+    } catch(e) {
+        utils.log(logger_caller, `Error - ${e}`, logger_args, "r");
+        return res.status(400).json({
+            bid: -1,
+            text: ""
+        });
+    }    
 });
 
 router.get("/data/:bid/:qtype/randmatched", function(req, res, next) {
@@ -103,16 +114,16 @@ router.post("/keyword-ext", function(req, res, next) {
     utils.log(logger_caller, "Success", logger_args);
     return res.status(200).json({
         keywords: [
-            "keyword-1",
-            "keyword-2",
-            "keyword-3"
+            { kid: 1, keyword: "keyword-1" },
+            { kid: 2, keyword: "keyword-2" },
+            { kid: 3, keyword: "keyword-3" }
         ],
         main_sentences: [
-            "main-sentence-1",
-            "main-sentence-2",
-            "main-sentence-3"
+            { sid: 1, main_sentence: "main-sentence-1" },
+            { sid: 2, main_sentence: "main-sentence-2" },
+            { sid: 3, main_sentence: "main-sentence-3" }            
         ],
-        has_ground_truth: true,
+        has_ground_truth: false,
         keyword_accuracy: 0.8,
         main_sentence_accuracy: 0.7,
         ground_truth: {
@@ -128,6 +139,38 @@ router.post("/keyword-ext", function(req, res, next) {
             ]
         }
     });
+});
+
+router.post("/keyword-eval", function(req, res, next){
+    var logger_caller = "/api/keyword-eval(POST)";
+    var logger_args = { evals: req.body.evals };
+
+    var evals = req.body.evals;
+
+    for(var item in evals) {
+        try {
+            var kid = item["kid"];
+            var eval = item["eval"];
+
+            var qresult = connection.query(`SELECT good_count, bad_count FROM Keyword WHERE kid=${mysql.escape(kid)}`);
+            if (qresult.length != 1) throw new Error("Invalid kid");
+
+            var good_count = qresult[0]["good_count"];
+            var bad_count = qresult[0]["bad_count"];
+
+            if(eval == 1) { //good
+                connection.query(`UPDATE Keyword SET good_count=${mysql.escape(good_count + 1)} WHERE kid=${mysql.escape(kid)}`);
+            } else if (eval == -1) { //bad
+                connection.query(`UPDATE Keyword SET bad_count=${mysql.escape(bad_count + 1)} WHERE kid=${mysql.escape(kid)}`);
+            }
+
+            utils.log(logger_caller, "Success", logger_args);
+            return res.sendStatus(200);
+        } catch(e) {
+            utils.log(logger_caller, `Error - ${e}`, logger_args, "r");
+            return res.sendStatus(400);
+        }
+    }
 });
 
 module.exports = router;

@@ -101,9 +101,18 @@ div.content > div.row > div.col {
 
 #ResultCell-Success > div.cell-content {
     margin-top: 10px;
+    margin-left: 10px;
 }
 
-div.cell div.cell-content pre {
+#ResultCell-Success > div.cell-content > div.cell > div.cell-content {
+    padding-left: 10px;
+}
+
+#ResultCell-Success > div.cell-content > div.cell > div.cell-content > div {
+    margin-bottom: 5px;
+}
+
+#ResultCell-Success pre {
     background-color: #e9ecef;
     padding: 0.375rem 0.75rem;
     border: 1px solid #343a40;
