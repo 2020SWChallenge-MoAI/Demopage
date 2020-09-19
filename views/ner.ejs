@@ -1,0 +1,58 @@
+<% layout("layouts/default") %>
+<div class="row mh-100 h-100 overflow-auto">
+    <%- partial("includes/left") %>
+    <div class="col mh-100 h-100 overflow-auto" id="RightArea">
+        <div class="cell d-flex justify-content-end">
+			<button type="button" id="Submit-Btn" class="btn btn-primary d-flex align-items-center">
+				<span class="btn-text">AI 분석</span>
+				<span class="spinner-border spinner-border-sm d-none"></span>
+				<span class="spinner-text d-none">&nbsp;분석 중...</span>
+			</button>
+		</div>
+
+        <div class="cell border border-success rounded p-2 d-none" id="ResultCell-Success">
+            <div class="cell-title">
+				<p>분석 결과</p>
+            </div>
+
+            <div class="cell-content">
+                <input type="hidden" id="Data" value="[]">
+                <input type="hidden" id="CurSentenceIdx" value="0">
+
+				<div class="cell" id="SentenceCell">
+					<div class="cell-title">
+						<p>개체명 (0/0)</p>
+					</div>
+					<div class="cell-content" id="Sentence"></div>
+                </div>
+
+                <div class="cell d-flex justify-content-end">
+					<button type="button" id="NER-Eval-Submit-Btn" class="btn btn-primary d-flex align-items-center">
+						<span class="btn-text">NER 평가 등록하기</span>
+						<span class="spinner-border spinner-border-sm d-none"></span>
+						<span class="spinner-text d-none">&nbsp;등록 중...</span>
+					</button>
+                </div>
+                
+                <div class="sentence-nav-btns row">
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-dark float-left btn-sm" id="Prev-Sentence-Btn"><i class="fas fa-chevron-left"></i></button>
+                    </div>
+                    <div class="col">
+                        <button type="button" class="btn btn-outline-dark float-right btn-sm" id="Next-Sentence-Btn"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell border border-danger rounded p-2 d-none" id="ResultCell-Failed">
+			<div class="cell-title">
+				<p>분석 실패</p>
+			</div>
+
+			<div class="cell-content"></div>
+		</div>
+    </div>
+</div>
+
+<script src="/js/ner.js"></script>

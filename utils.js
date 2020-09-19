@@ -38,10 +38,12 @@ module.exports.log = function (caller, msg, args, msg_color) {
         args = "";
     }
 
-    if (Object.keys(args).length === 0) {
-        console.log("\x1b[32m[%s] [%s] %s%s\x1b[0m\n", date, caller, msg_color, msg);
-    } else {
-        console.log("\x1b[32m[%s] [%s] %s%s\x1b[0m - %j\n", date, caller, msg_color, msg, args);
-    }
+    var print = `\x1b[32m[Demo Webserver, ${date}]\x1b[0m`;
+    if (caller.length != 0) print += `\x1b[32m [${caller}]\x1b[0m`;
+    print += ` ${msg_color}${msg}\x1b[0m`;
+    if (Object.keys(args).length != 0) print += ` - ${JSON.stringify(args)}`;
+    print += `\n`;
+
+    console.log(print);
 }
 

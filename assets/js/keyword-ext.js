@@ -32,23 +32,67 @@ function get_main_sentence_html(sid, main_sentence) {
     return html;
 }
 
+$("#KeywordNumDecBtn").click(function() {
+    var target = $("#KeywordNum");
+
+    var cur_val = parseInt(Number(target.val()));
+
+    if (cur_val === NaN) {
+        target.val("5");
+    } else if(cur_val <= 1) {
+        target.val("1");
+    } else {
+        target.val(cur_val - 1);
+    }
+});
+
+$("#KeywordNumIncBtn").click(function() {
+    var target = $("#KeywordNum");
+
+    var cur_val = parseInt(Number(target.val()));
+
+    if (cur_val === NaN) {
+        target.val("5");
+    } else {
+        target.val(cur_val + 1);
+    }
+});
+
 $("#Submit-Btn").click(function () {
+    var bid = Number($("#BID").val());
+    if (bid === NaN) {
+        bid = -1;
+    }
+
     var text = $("#Text").val();
     if(text === undefined || text.length == 0){
         alert("Text가 입력되지 않았습니다.");
         return;
     }
 
+    var keyword_num = Number($("#KeywordNum").val());
+    if(keyword_num === NaN) {
+        $("#KeywordNum").val(5);
+        keyword_num = 5;
+    } else if (keyword_num < 1) {
+        $("#KeywordNum").val(1);
+        keyword_num = 1;
+    }
+
     $.ajax({
         url: "/api/keyword-ext",
         method: "POST",
         data: {
+            bid: bid,
+            keyword_num: keyword_num,
             text: text
         },
         context: this,
         beforeSend: function () {
             disableSpinnerBtn($(this));
             $("#Text").attr("disabled", true);
+            $("#ModelVersion").attr("disabled", true);
+            $("#KeywordNum").attr("disabled", true);
             $("#ResultCell-Success").addClass("d-none");
             $("#GroundTruthKeywordCell").addClass("d-none");
             $("#GroundTruthMainSentenceCell").addClass("d-none");
@@ -90,6 +134,8 @@ $("#Submit-Btn").click(function () {
         complete: function () {
             enableSpinnerBtn($(this));
             $("#Text").attr("disabled", false);
+            $("#ModelVersion").attr("disabled", false);
+            $("#KeywordNum").attr("disabled", false);
         }
 
     })
@@ -98,6 +144,8 @@ $("#Submit-Btn").click(function () {
 $("#Keyword-Eval-Submit-Btn").click(function() {
     disableSpinnerBtn($(this));
     $("#Text").attr("disabled", true);
+    $("#ModelVersion").attr("disabled", true);
+    $("#KeywordNum").attr("disabled", true);
     $("#KeywordCell div.keyword div.btn-group input.eval").attr("disabled", true);
 
     var evals = [];
@@ -147,6 +195,8 @@ $("#Keyword-Eval-Submit-Btn").click(function() {
         complete: function () {
             enableSpinnerBtn($(this));
             $("#Text").attr("disabled", false);
+            $("#ModelVersion").attr("disabled", false);
+            $("#KeywordNum").attr("disabled", false);
             $("#KeywordCell div.keyword div.btn-group input.eval").attr("disabled", false);
         }
 

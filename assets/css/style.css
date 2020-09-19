@@ -118,3 +118,11 @@ div.content > div.row > div.col {
     border: 1px solid #343a40;
     border-radius: 0.25rem;
 }
+
+#Sentence > div {
+    margin-bottom: 5px;
+}
+
+#SentenceCell > div.cell-content > div.sentence-nav-btns {
+    margin-top: 15px;
+}

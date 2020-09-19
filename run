@@ -1,0 +1,34 @@
+#!/bin/bash
+
+function kill_port() {
+    who=$1
+    port=$2
+
+    pid=$(netstat -tnlp 2>/dev/null | grep ":$port" | awk -F'LISTEN *|/' '/^(tcp|udp)/{print $2}')
+    if [ -n "$pid" ]
+    then
+        kill $pid
+        echo $who : Process $pid killed
+    fi
+    unset pid
+}
+
+function kill_all() {
+    kill_port "Keyword Extraction Server" "9001"
+    kill_port "NER Server" "9002"
+}
+
+trap "kill_all; exit" SIGHUP SIGINT SIGTERM
+
+source activate demo-webserver
+
+# Execute Keyword Extraction Module
+kill_port "Keyword Extraction Server" "9001"
+python modules/keyword-extraction-server.py&
+
+# Execute NER Module
+kill_port "NER Server" "9002"
+python modules/ner-server.py&
+
+# Execute Demo Webserver
+node server.js
