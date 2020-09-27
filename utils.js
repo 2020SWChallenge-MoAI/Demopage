@@ -42,7 +42,7 @@ module.exports.log = function (caller, msg, args, msg_color) {
     if (caller.length != 0) print += `\x1b[32m [${caller}]\x1b[0m`;
     print += ` ${msg_color}${msg}\x1b[0m`;
     if (Object.keys(args).length != 0) print += ` - ${JSON.stringify(args)}`;
-    print += `\n`;
+    //print += `\n`;
 
     console.log(print);
 }

@@ -2,41 +2,76 @@
 <div class="row mh-100 h-100 overflow-auto">
 	<%- partial("includes/left") %>
     <div class="col mh-100 h-100 overflow-auto" id="RightArea">
-		<div class="cell" id="ModelVersionCell">
-			<div class="cell-title">
-				<p>모델 버전</p>
-			</div>
-			<div class="cell-content">
-				<select class="form-control border-dark" id="ModelVersion">
-					<option value="v0.0.1">v0.0.1</option>
-				</select>
-			</div>
-		</div>
-
-		<div class="cell" id="KeywordNumCell">
-			<div class="cell-title">
-				<p>키워드 개수</p>
-			</div>
-			<div class="cell-content">
-				<div class="input-group">
-					<div class="input-group-prepend">
-						<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="KeywordNumDecBtn"><i class="fas fa-chevron-down"></i></button>
+		<div class="row">
+			<div class="col cell" id="KeyWordConfigCell">
+				<div class="cell-title">
+					<p>키워드 추출</p>
+				</div>
+				<div class="cell-content">
+					<div class="cell" id="KeywordModelVersionCell">
+						<div class="cell-title">
+							<p>모델 버전</p>
+						</div>
+						<div class="cell-content">
+							<select class="form-control border-dark" id="KeywordModelVersion">
+								<option value="v1.0.0">v1.0.0</option>
+							</select>
+						</div>
 					</div>
-					<input type="number" class="form-control border-dark" id="KeywordNum" value="5" min="1">
-					<div class="input-group-append">
-						<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="KeywordNumIncBtn"><i class="fas fa-chevron-up"></i></button>
+			
+					<div class="cell" id="KeywordNumCell">
+						<div class="cell-title">
+							<p>개수</p>
+						</div>
+						<div class="cell-content">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="KeywordNumDecBtn"><i class="fas fa-chevron-down"></i></button>
+								</div>
+								<input type="number" class="form-control border-dark input-number-no-control" id="KeywordNum" value="5" min="1">
+								<div class="input-group-append">
+									<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="KeywordNumIncBtn"><i class="fas fa-chevron-up"></i></button>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
-				<style>
-					#KeywordNum::-webkit-outer-spin-button,
-					#KeywordNum::-webkit-inner-spin-button {
-						-webkit-appearance: none;
-					}
+			</div>
 
-					#KeywordNum {
-						-moz-appearance: textfield;
-					}
-				</style>
+			<div class="col cell" id="MainSentenceConfigCell">
+				<div class="cell-title">
+					<p>키워드 추출</p>
+				</div>
+				<div class="cell-content">
+					<div class="cell" id="MainSentenceModelVersionCell">
+						<div class="cell-title">
+							<p>모델 버전</p>
+						</div>
+						<div class="cell-content">
+							<select class="form-control border-dark" id="MainSentenceModelVersion">
+								<option value="v1.0.0" selected>v1.0.0 - komoran tokenizer</option>
+								<option value="v2.0.0">v2.0.0 - subword tokenizer</option>
+							</select>
+						</div>
+					</div>
+	
+					<div class="cell" id="MainSentenceNumCell">
+						<div class="cell-title">
+							<p>개수</p>
+						</div>
+						<div class="cell-content">
+							<div class="input-group">
+								<div class="input-group-prepend">
+									<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="MainSentenceNumDecBtn"><i class="fas fa-chevron-down"></i></button>
+								</div>
+								<input type="number" class="form-control border-dark input-number-no-control" id="MainSentenceNum" value="5" min="1">
+								<div class="input-group-append">
+									<button class="btn btn-outline-secondary border-dark btn-sm" type="button" id="MainSentenceNumIncBtn"><i class="fas fa-chevron-up"></i></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -70,6 +105,14 @@
 					</button>
 				</div>
 
+				<div class="cell" id="NERCell">
+					<div class="cell-title">
+						<p>NER</p>
+					</div>
+					<div class="cell-content">
+					</div>
+				</div>
+
 				<div class="cell" id="MainSentenceCell">
 					<div class="cell-title">
 						<p>핵심 문장</p>
@@ -84,42 +127,6 @@
 						<span class="spinner-border spinner-border-sm d-none"></span>
 						<span class="spinner-text d-none">&nbsp;등록 중...</span>
 					</button>
-				</div>
-
-				<div class="cell" id="GroundTruthKeywordCell">
-					<div class="cell-title">
-						<p>키워드 정답</p>
-					</div>
-					<div class="cell-content">
-						<pre id="GroundTruthKeyword"></pre>
-					</div>
-				</div>
-
-				<div class="cell" id="GroundTruthMainSentenceCell">
-					<div class="cell-title">
-						<p>핵심 문장 정답</p>
-					</div>
-					<div class="cell-content">
-						<pre id="GroundTruthMainSentence"></pre>
-					</div>
-				</div>
-
-				<div class="cell" id="KeywordAccuracyCell">
-					<div class="cell-title">
-						<p>키워드 정확도</p>
-					</div>
-					<div class="cell-content form-group">
-						<input type="text" id="KeywordAccuracy" class="form-control border border-dark" disabled>
-					</div>
-				</div>
-
-				<div class="cell" id="MainSentenceAccuracyCell">
-					<div class="cell-title">
-						<p>핵심 문장 정확도</p>
-					</div>
-					<div class="cell-content form-group">
-						<input type="text" id="MainSentenceAccuracy" class="form-control border border-dark" disabled>
-					</div>
 				</div>
 			</div>
 		</div>

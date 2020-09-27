@@ -24,5 +24,5 @@ app.get("/qna-valid-chk", (req, res) => { res.render("qna-valid-chk", {nav_choic
 app.get("/", (req, res) => { res.redirect("/keyword-ext") });
 
 app.listen(9000, "0.0.0.0", () => {
-    utils.log("", "Listening at http://127.0.0.1:9000");
+    utils.log("", "Listening at http://0.0.0.0:9000");
 })

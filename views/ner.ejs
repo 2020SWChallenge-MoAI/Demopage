@@ -2,6 +2,36 @@
 <div class="row mh-100 h-100 overflow-auto">
     <%- partial("includes/left") %>
     <div class="col mh-100 h-100 overflow-auto" id="RightArea">
+        <div class="cell" id="ModelVersionCell">
+			<div class="cell-title">
+				<p>Legend</p>
+			</div>
+			<div class="cell-content">
+				<ul>
+                    <li><b>TERM</b> : 색깔, 방향, 기후 명칭, 모양/형태 명칭, 세포/조직/기관 명칭, 약/약품 명, IT용어, URL주소, 이메일 주소, 게임 장르, 스포츠 기술/규칙 명칭</li>
+                    <li><b>LOCATION</b> : 국가, 도, 주, 도시, 수도, 강, 바다, 산, 섬, 대륙, 관광명소, 천체 명칭</li>
+                    <li><b>CIVILIZATION</b> : 민족/국민/스포츠/제도/연금/언어/건축양식/음식/음료수/의복/직위/인간관계/직업/통화/훈장/법 명칭</li>
+                    <li><b>ANIMAL</b> : 곤충, 조류, 어류 등 모든 동물, 동물 신체 명칭</li>
+                    <li><b>ORGANIZATION</b> : (경제, 교육, 미디어, 군사, 예술, 의학, 종교, 과학, 정부 등)기관, 회사, 숙박 업체, 도서관 등</li>
+                    <li><b>EVENT</b> : 사회 운동 및 선언, 전쟁, 혁명, 스포츠 행사, 축제 명칭</li>
+                    <li><b>DATE</b> : 기간, 날짜, 달, 년, 계절 등</li>
+                    <li><b>NUMBER</b> : 나이, 크기, 길이, 개수, 무게, 비율, 속도, 부피, 순서, 금액, 전화번호, TV채널, 앨범 수량, 우편번호, 금액</li>
+                    <li><b>PERSON</b> : 인물 실존, 가상 등 인물명에 해당 하는 것</li>
+                    <li><b>TIME</b> : 시각(HOUR), 분, 초</li>
+                    <li><b>ARTIFACTS WORKS</b> : 건물, 서적, 작품, 건축물(아파트, 등대, 분수, 운동장 이름 등), 도로, 악기, 교통수단, 놀이기구, 지도, 영화, TV프로그램, 무용 작품, 연극, 미술 작품, 음악 작품</li>
+                    <li><b>STUDY FIELD</b> : 과학/사회과학/정치/경제/사회/의학/예술/철학 관련 학문 분야 및 학파, 이론, 법칙, 사상, 학설, 의학 요법, 의학 처방</li>
+                    <li><b>MATERIAL</b> : 원소명, 금속물, 암석 명칭, 모든 화학물질</li>
+                    <li><b>PLANT</b> : 과일/꽃/나무/풀/유형/식물의 한 부분의 명칭</li>
+                    <li><b>O</b> : 분류 불가</li>
+                </ul>
+
+                <ul style="margin-top: 5px;">
+                    <li><b>BEGIN</b> : 구(phase)의 시작</li>
+                    <li><b>INSIDE</b> : 구(phase)의 나머지</li>
+                </ul>
+			</div>
+		</div>
+
         <div class="cell d-flex justify-content-end">
 			<button type="button" id="Submit-Btn" class="btn btn-primary d-flex align-items-center">
 				<span class="btn-text">AI 분석</span>

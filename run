@@ -14,8 +14,10 @@ function kill_port() {
 }
 
 function kill_all() {
+    kill_port "Demo Webserver" "9000"
     kill_port "Keyword Extraction Server" "9001"
     kill_port "NER Server" "9002"
+    kill_port "Main Sentence Server" "9003"
 }
 
 trap "kill_all; exit" SIGHUP SIGINT SIGTERM
@@ -30,5 +32,10 @@ python modules/keyword-extraction-server.py&
 kill_port "NER Server" "9002"
 python modules/ner-server.py&
 
+# Execute Main Sentence Extraction Module
+kill_port "Main Sentence Extraction Server" "9003"
+python modules/main-sentence-extraction-server.py&
+
 # Execute Demo Webserver
+kill_port "Demo Webserver" "9000"
 node server.js

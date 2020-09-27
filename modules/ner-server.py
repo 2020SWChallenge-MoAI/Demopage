@@ -7,7 +7,7 @@ import datetime
 
 def log(msg):
     curtime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-    print("\x1b[32m[NER Server, {}]\x1b[0m {}\n".format(curtime, msg))
+    print("\x1b[32m[NER Server, {}]\x1b[0m {}".format(curtime, msg))
 
 app = Flask(__name__)
 
@@ -16,8 +16,9 @@ app.logger.disable = True
 logging.getLogger("werkzeug").disabled = True
 sys.modules["flask.cli"].show_server_banner = lambda *x: None
 
-model = KoBERT_NER(model_dir=os.path.join(os.path.dirname(__file__), 'model/ner'))
+model = KoBERT_NER(model_dir=os.path.join(os.path.dirname(__file__), 'model/ner'),gpu=True)
 log("\"pytorch_model.bin\" Loaded")
+log(f"NER model is on {model.device}")
 
 @app.route("/", methods=['POST'])
 def analyze():

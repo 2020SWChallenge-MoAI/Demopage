@@ -7,7 +7,7 @@ import datetime
 
 def log(msg):
     curtime = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-    print("\x1b[32m[Keyword Extraction Server, {}]\x1b[0m {}\n".format(curtime, msg))
+    print("\x1b[32m[Keyword Extraction Server, {}]\x1b[0m {}".format(curtime, msg))
 
 extractor = KeywordExtractor()
 app = Flask(__name__)
@@ -51,10 +51,11 @@ def extract():
     json = request.get_json()
     keyword_num = int(json["keyword_num"])
     text = json["text"]
+    model_ver = json["keyword_model_ver"]
     
     keywords = extractor.recommend_from_sentences(preprocess(text), num=keyword_num)
     
-    log(keywords)
+    log([{"weight":float("{:.4f}".format(x["weight"])), "word":x["word"]} for x in keywords])
     return {"keywords": keywords}, 200
 
 if __name__ == "__main__":

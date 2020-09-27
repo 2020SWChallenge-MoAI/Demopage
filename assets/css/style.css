@@ -126,3 +126,107 @@ div.content > div.row > div.col {
 #SentenceCell > div.cell-content > div.sentence-nav-btns {
     margin-top: 15px;
 }
+
+#LeftArea div.cell div.cell-title div.load-text-btns-cell {
+    display: flex;
+}
+
+input[type=number].input-number-no-control::-webkit-outer-spin-button,
+input[type=number].input-number-no-control::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type=number].input-number-no-control {
+    -moz-appearance: textfield;
+}
+
+#LeftArea div.cell div.cell-title div.load-text-control {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 5px;
+}
+
+#NERCell div.cell-content {
+    line-height: 2em;
+}
+
+#NERCell div.cell-content span.word-tag {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: calc(0.5em + 6px);
+    margin: 5px;
+    word-break: keep-all;
+    white-space: nowrap;
+}
+
+#NERCell div.cell-content span.word-tag.tag-TRM-B,
+#NERCell div.cell-content span.word-tag.tag-TRM-I {
+    background-color: lightblue;
+}
+
+#NERCell div.cell-content span.word-tag.tag-LOC-B,
+#NERCell div.cell-content span.word-tag.tag-LOC-I {
+    background-color: yellow;
+}
+
+#NERCell div.cell-content span.word-tag.tag-CVL-B,
+#NERCell div.cell-content span.word-tag.tag-CVL-I {
+    background-color: lightcoral;
+}
+
+#NERCell div.cell-content span.word-tag.tag-ANM-B,
+#NERCell div.cell-content span.word-tag.tag-ANM-I {
+    background-color: lightgray;
+}
+
+#NERCell div.cell-content span.word-tag.tag-ORG-B,
+#NERCell div.cell-content span.word-tag.tag-ORG-I {
+    background-color: lightcyan;
+}
+
+#NERCell div.cell-content span.word-tag.tag-EVT-B,
+#NERCell div.cell-content span.word-tag.tag-EVT-I {
+    background-color: lightgreen;
+}
+
+#NERCell div.cell-content span.word-tag.tag-DAT-B,
+#NERCell div.cell-content span.word-tag.tag-DAT-I {
+    background-color: lightpink;
+}
+
+#NERCell div.cell-content span.word-tag.tag-NUM-B,
+#NERCell div.cell-content span.word-tag.tag-NUM-I {
+    background-color: lightgoldenrodyellow;
+}
+
+#NERCell div.cell-content span.word-tag.tag-PER-B,
+#NERCell div.cell-content span.word-tag.tag-PER-I {
+    background-color: lightskyblue;
+}
+
+#NERCell div.cell-content span.word-tag.tag-TIM-B,
+#NERCell div.cell-content span.word-tag.tag-TIM-I {
+    background-color: lightseagreen;
+}
+
+#NERCell div.cell-content span.word-tag.tag-AFW-B,
+#NERCell div.cell-content span.word-tag.tag-AFW-I {
+    background-color: lightyellow;
+}
+
+#NERCell div.cell-content span.word-tag.tag-FLD-B,
+#NERCell div.cell-content span.word-tag.tag-FLD-I {
+    background-color: lightsalmon;
+}
+
+#NERCell div.cell-content span.word-tag.tag-MAT-B,
+#NERCell div.cell-content span.word-tag.tag-MAT-I {
+    background-color: lightsteelblue;
+}
+
+#NERCell div.cell-content span.word-tag.tag-PLT-B,
+#NERCell div.cell-content span.word-tag.tag-PLT-I {
+    background-color: lightslategray;
+}

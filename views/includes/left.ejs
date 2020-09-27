@@ -2,16 +2,33 @@
     <div class="cell">
         <div class="cell-title">
             <p>도서</p>
-            <button id="LoadRandText-Btn" class="btn btn-outline-primary btn-sm d-flex align-items-center">
-                <span class="btn-text"><i class="far fa-copy"></i> 도서 불러오기</span>
-                <span class="spinner-border spinner-border-sm d-none"></span>
-                <span class="spinner-text d-none">&nbsp;불러오는 중...</span>
-            </button>
+            <div class="form-inline load-text-control">
+                <div class="radio-btns form-inline">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="LoadTextOption" id="LoadTextOption-ByRandom" value="0" checked>
+                        <label class="form-check-label" for="LoadTextOption-ByRandom">Random</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="LoadTextOption" id="LoadTextOption-ByBID" value="1">
+                        <label class="form-check-label" for="LoadTextOption-ByBID">By BID</label>
+                    </div>
+                </div>
+
+                <input type="number" id="BID" placeholder="BID" class="form-control border border-dark form-control-sm input-number-no-control" disabled>
+
+                <div class="input-group-append">
+                    <button id="LoadText-Btn" class="btn btn-outline-primary btn-sm d-flex align-items-center">
+                        <span class="btn-text"><i class="far fa-copy"></i> 도서 불러오기</span>
+                        <span class="spinner-border spinner-border-sm d-none"></span>
+                        <span class="spinner-text d-none">&nbsp;불러오는 중...</span>
+                    </button>
+                </div>
+
+            </div>
         </div>
         <div class="cell-content form-group">
             <textarea id="Text" spellcheck="false" class="form-control border border-dark"></textarea>
         </div>
-        <input type="hidden" id="BID" value="-1">
     </div>
     <script src="/js/left.js"></script>
 </div>

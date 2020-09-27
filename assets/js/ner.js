@@ -8,8 +8,8 @@ function get_word_html(word) {
     </div>
     <div class="col correct-tag">
         <select class="form-control">
-            <option value="TRM-B"${(word["tag"] == "TRM-B") ? " selected" : ""}>TERM_BEGIN : 의학 용어, IT곤련 용어 등 일반 용어를 총칭</option>
-            <option value="TRM-I"${(word["tag"] == "TRM-I") ? " selected" : ""}>TERM_INSIDE : 의학 용어, IT곤련 용어 등 일반 용어를 총칭</option>
+            <option value="TRM-B"${(word["tag"] == "TRM-B") ? " selected" : ""}>TERM_BEGIN : 의학 용어, IT관련 용어 등 일반 용어를 총칭</option>
+            <option value="TRM-I"${(word["tag"] == "TRM-I") ? " selected" : ""}>TERM_INSIDE : 의학 용어, IT관련 용어 등 일반 용어를 총칭</option>
             <option value="LOC-B"${(word["tag"] == "LOC-B") ? " selected" : ""}>LOCATION_BEGIN : 지역명칭과 행정구역 명칭 등</option>
             <option value="LOC-I"${(word["tag"] == "LOC-I") ? " selected" : ""}>LOCATION_INSIDE : 지역명칭과 행정구역 명칭 등</option>
             <option value="CVL-B"${(word["tag"] == "CVL-B") ? " selected" : ""}>CIVILIZATION_BEGIN : 문명 및 문화에 관련된 용어</option>
@@ -112,6 +112,7 @@ $("#Prev-Sentence-Btn").click(function() {
     var cur_sentence_idx = Number($("#CurSentenceIdx").val());
 
     if(cur_sentence_idx <= 0) {
+        alert("처음입니다.");
         cur_sentence_idx = 0;
     } else if (cur_sentence_idx >= total_sentence_num) {
         cur_sentence_idx = total_sentence_num - 1;
@@ -132,6 +133,7 @@ $("#Next-Sentence-Btn").click(function() {
     if(cur_sentence_idx < 0) {
         cur_sentence_idx = 0;
     } else if (cur_sentence_idx >= total_sentence_num - 1) {
+        alert("마지막입니다.");
         cur_sentence_idx = total_sentence_num - 1;
     } else {
         cur_sentence_idx += 1;
@@ -147,7 +149,7 @@ $("#NER-Eval-Submit-Btn").click(function() {
     $("#Text").attr("disabled", true);
     $("div.word-cell select").attr("disabled", true);
 
-    var sid = $("#CurSentenceIdx").val();
+    var sid = Number($("#CurSentenceIdx").val());
 
     var words = [];
     $("div.word-cell").each(function(idx, item) {
@@ -169,6 +171,7 @@ $("#NER-Eval-Submit-Btn").click(function() {
         context: this,
         success: function (data) {
             alert(`Sentence ${sid + 1} 평가 등록 완료`);
+            $("#Next-Sentence-Btn").trigger("click");
         },
         error: function () {
             alert(`Sentence ${sid + 1} 평가 등록 실패`);
