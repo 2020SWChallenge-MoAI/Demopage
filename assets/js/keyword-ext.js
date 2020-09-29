@@ -1,6 +1,6 @@
-function get_keyword_html(kid, keyword) {
+function get_keyword_html(kid, keyword, good_count, bad_count) {
     var html = `<div class="input-group keyword">
-    <input type="text" class="form-control border border-dark" value="[${Number(keyword.weight).toFixed(3)}] ${keyword.word}" disabled>
+    <input type="text" class="form-control border border-dark" value="[${Number(keyword.weight).toFixed(3)}] [${good_count}/${bad_count}] ${keyword.word}" disabled>
     <input type="hidden" class="kid" value="${kid}">
     <div class="input-group-append btn-group btn-group-toggle d-flex" data-toggle="buttons">
         <label class="btn btn-outline-primary flex-even">
@@ -15,9 +15,9 @@ function get_keyword_html(kid, keyword) {
     return html;
 }
 
-function get_main_sentence_html(sid, main_sentence) {
+function get_main_sentence_html(sid, main_sentence, good_count, bad_count) {
     var html = `<div class="input-group main-sentence">
-    <textarea type="text" class="form-control border border-dark" rows="5" disabled>[${Number(main_sentence.rank).toFixed(3)}] ${main_sentence.sentence}</textarea>
+    <textarea type="text" class="form-control border border-dark" rows="5" disabled>[${Number(main_sentence.rank).toFixed(3)}] [${good_count}/${bad_count}] ${main_sentence.sentence}</textarea>
     <input type="hidden" class="sid" value="${sid}">
     <div class="input-group-append btn-group btn-group-toggle d-flex" data-toggle="buttons">
         <label class="btn btn-outline-primary flex-even">
@@ -32,8 +32,8 @@ function get_main_sentence_html(sid, main_sentence) {
     return html;
 }
 
-function get_ner_html(word, tags) {
-    var html = `<span class="word-tag tag-${Object.keys(tags)[0]}">${word}`;
+function get_ner_wordcloud_html(word, tags) {
+    var html = `<span class="word-tag tag-${Object.keys(tags)[0].split("-")[0]}">${word}`;
     
     for(var tag of Object.keys(tags)) {
         html += ` [${tag}(${tags[tag]})]`
@@ -42,6 +42,89 @@ function get_ner_html(word, tags) {
     html += `</span>`;
 
     return html;
+}
+
+function get_ner_summary_html(data) {
+    var result = {
+        TRM: 0,
+        LOC: 0,
+        CVL: 0,
+        ANM: 0,
+        ORG: 0,
+        EVT: 0,
+        DAT: 0,
+        NUM: 0,
+        PER: 0,
+        TIM: 0,
+        AFW: 0,
+        FLD: 0,
+        MAT: 0,
+        PLT: 0,
+    };
+
+    var total = 0;
+
+    for(var word_tag of data) {
+        for(var tag of Object.keys(word_tag["tags"])) {
+            result[tag.split("-")[0]] += word_tag["tags"][tag];
+            total += word_tag["tags"][tag];
+        }
+    }
+
+    result_array = [];
+    for(var i = 0; i < Object.keys(result).length; i++) {
+        var key = Object.keys(result)[i];
+
+        var count = result[key];
+
+        if(count != 0) result_array.push([key, count]);
+    }
+    result_array.sort((a, b) => (b[1] - a[1]));
+
+    var html = "<ul>";
+    for(var item of result_array) {
+        html += `<li>${item[0]} : ${item[1]} / ${total} = ${(100 * item[1] / total).toFixed(2)}%</li>`;
+    }
+    html += "</ul>";
+
+    return html;
+}
+
+function ner_wordcloud_filter_apply() {
+    var tags = [
+        "TRM",
+        "LOC",
+        "CVL",
+        "ANM",
+        "ORG",
+        "EVT",
+        "DAT",
+        "NUM",
+        "PER",
+        "TIM",
+        "AFW",
+        "FLD",
+        "MAT",
+        "PLT"
+    ];
+
+    var is_all_unchecked = true;
+    for(var tag of tags) {
+        var is_checked = $(`#NERCell div.cell-content div.filter div.options input[type=checkbox]#NER-Tag-${tag}`).prop("checked");
+
+        var target = $(`#NERCell div.cell-content div.word-cloud span.word-tag.tag-${tag}`);
+
+        if(is_checked) {
+            is_all_unchecked = false;
+            target.removeClass("d-none");
+        } else {
+            target.addClass("d-none");
+        }
+    }
+
+    if(is_all_unchecked) {
+        $(`#NERCell div.cell-content div.word-cloud span.word-tag`).removeClass("d-none");
+    }
 }
 
 function on_dec_btn_clicked(target) {
@@ -99,13 +182,16 @@ $("#Submit-Btn").click(function () {
         $("#ResultCell-Failed").addClass("d-none");
         $("#KeywordCell div.cell-content").empty();
         $("#MainSentenceCell div.cell-content").empty();
-        $("#NERCell div.cell-content").empty();
+        $("#NERCell div.cell-content div.summary").empty();
+        $("#NERCell div.cell-content div.word-cloud").empty();
+
+        $("#NERCell div.cell-content div.filter div.options input[type=checkbox]").prop("checked", false);
     }
 
     function unlock(current) {
         enableSpinnerBtn(current);
         $("input[name=LoadTextOption]").attr("disabled", false);
-        if($("input[name=LoadTextOption]:checked") == "1") $("#BID").attr("disabled", true);
+        if($("input[name=LoadTextOption]:checked").val() == "1") $("#BID").attr("disabled", false);
         $("#Text").attr("disabled", false);
         $("#KeywordModelVersion").attr("disabled", false);
         $("#KeywordNum").attr("disabled", false);
@@ -166,17 +252,19 @@ $("#Submit-Btn").click(function () {
 
             var target = $("#KeywordCell div.cell-content");
             for(var item of data["keywords"]) {
-                target.append(get_keyword_html(item["kid"], item["keyword"]));
+                target.append(get_keyword_html(item["kid"], item["keyword"], item["good_count"], item["bad_count"]));
             }
 
             var target = $("#MainSentenceCell div.cell-content");
             for(var item of data["main_sentences"]) {
-                target.append(get_main_sentence_html(item["sid"], item["main_sentence"]));
+                target.append(get_main_sentence_html(item["sid"], item["main_sentence"], item["good_count"], item["bad_count"]));
             }
 
-            var target = $("#NERCell div.cell-content");
+            $("#NERCell div.cell-content div.summary").html(get_ner_summary_html(data["word_tags"]));
+
+            var target = $("#NERCell div.cell-content div.word-cloud");
             for(var item of data["word_tags"]) {
-                target.append(get_ner_html(item["word"], item["tags"]));
+                target.append(get_ner_wordcloud_html(item["word"], item["tags"]));
             }
         },
         error: function () {
@@ -204,7 +292,7 @@ $("#Keyword-Eval-Submit-Btn").click(function() {
     function unlock(current) {
         enableSpinnerBtn(current);
         $("input[name=LoadTextOption]").attr("disabled", false);
-        if($("input[name=LoadTextOption]:checked") == "1") $("#BID").attr("disabled", true);
+        if($("input[name=LoadTextOption]:checked").val() == "1") $("#BID").attr("disabled", false);
         $("#Text").attr("disabled", false);
         $("#KeywordModelVersion").attr("disabled", false);
         $("#KeywordNum").attr("disabled", false);
@@ -279,7 +367,7 @@ $("#Main-Sentence-Eval-Submit-Btn").click(function() {
     function unlock(current) {
         enableSpinnerBtn(current);
         $("input[name=LoadTextOption]").attr("disabled", false);
-        if($("input[name=LoadTextOption]:checked") == "1") $("#BID").attr("disabled", true);
+        if($("input[name=LoadTextOption]:checked").val() == "1") $("#BID").attr("disabled", false);
         $("#Text").attr("disabled", false);
         $("#KeywordModelVersion").attr("disabled", false);
         $("#KeywordNum").attr("disabled", false);
@@ -337,3 +425,13 @@ $("#Main-Sentence-Eval-Submit-Btn").click(function() {
         }
     })
 });
+
+$("#NER-Tag-Reset-Btn").click(function() {
+    $("#NERCell div.cell-content div.filter div.options input[type=checkbox]").prop("checked", false);
+
+    ner_wordcloud_filter_apply();
+})
+
+$("#NERCell div.cell-content div.filter div.options input[type=checkbox]").change(function() {
+    ner_wordcloud_filter_apply();
+})

@@ -17,32 +17,28 @@ app.logger.disable = True
 logging.getLogger("werkzeug").disabled = True
 sys.modules["flask.cli"].show_server_banner = lambda *x: None
 
+# create keyword-extractor.pkl if not exist
 if "keyword-extractor.pkl" not in os.listdir(os.path.join(os.path.dirname(__file__), "model/keyword-extraction")):
     log("\"keyword-extraction.pkl\" file not exist. Creating one...")
 
-    import pymysql
-
-    db = pymysql.connect(
-        user='demo_webserver',
-        passwd='demo_webserver',
-        host='127.0.0.1',
-        db='demo_webserver',
-        charset='utf8'
-    )
-
-    cursor = db.cursor(pymysql.cursors.DictCursor)
-
-    cursor.execute("SELECT bid, text FROM Book;")
-    result = cursor.fetchall()
+    path = "../book/woongjin/raw"
+    files = sorted([x for x in os.listdir(path) if x.endswith(".txt")], key=lambda x: int(".".join(x.split(".")[:-1])))
 
     build_data = []
-    for i, item in enumerate(result):
-        log("{}/{}".format(i + 1, len(result)))
-        build_data.append([item["bid"], preprocess(item["text"])])
+    for i, filename in enumerate(files):
+        log("{}/{} : {}".format(i + 1, len(files), filename))
+
+        bid = int(".".join(filename.split(".")[:-1]))
+
+        with open(os.path.join(path, filename), "r") as f:
+            text = f.read()
+
+        build_data.append([bid, preprocess(text)])
 
     extractor.build(build_data)
-    extractor.save(os.path.join(os.path.dirname(__file__), "keyword-extractor.pkl"))
+    extractor.save(os.path.join(os.path.dirname(__file__), "model/keyword-extraction", "keyword-extractor.pkl"))
 
+# load keyword-extractor.pkl
 extractor.load(os.path.join(os.path.join(os.path.dirname(__file__), "model/keyword-extraction/keyword-extractor.pkl")))
 log("\"keyword-extraction.pkl\" Loaded")
 
@@ -52,6 +48,7 @@ def extract():
     keyword_num = int(json["keyword_num"])
     text = json["text"]
     model_ver = json["keyword_model_ver"]
+    keyword_history = json["keyword_history"]
     
     keywords = extractor.recommend_from_sentences(preprocess(text), num=keyword_num)
     

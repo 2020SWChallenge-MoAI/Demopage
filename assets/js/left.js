@@ -15,9 +15,6 @@ $("#LoadText-Btn").click(function() {
 
         $("#ResultCell-Success").addClass("d-none");
         $("#ResultCell-Failed").addClass("d-none");
-        $("#KeywordCell div.cell-content").empty();
-        $("#MainSentenceCell div.cell-content").empty();
-        $("#NERCell div.cell-content").empty();
     }
 
     function unlock(current) {

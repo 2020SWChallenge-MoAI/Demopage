@@ -190,13 +190,14 @@ router.post("/keyword-ext", async function(req, res, next) {
     var keyword_num = req.body.keyword_num;
     var main_sentence_model_ver = req.body.main_sentence_model_ver;
     var main_sentence_num = req.body.main_sentence_num;
+    var keyword_history = [];
 
     if(bid == -1) { //given text is new text -> save
         bid = await saveTextWithNewBID(text, logger_caller, logger_args);
     }
 
     //keyword
-    function keyword_ext(keyword_model_ver, keyword_num, bid, text) {
+    function keyword_ext(keyword_model_ver, keyword_num, keyword_history, bid, text) {
         return new Promise((resolve, reject) => {
             request({
                 uri: "http://127.0.0.1:9001/",
@@ -204,7 +205,9 @@ router.post("/keyword-ext", async function(req, res, next) {
                 body: {
                     keyword_model_ver: keyword_model_ver,
                     keyword_num: keyword_num,
-                    text: text
+                    bid: bid,
+                    text: text,
+                    keyword_history: keyword_history
                 },
                 json: true
             }, async function(error, httpResponse, body) {
@@ -218,20 +221,29 @@ router.post("/keyword-ext", async function(req, res, next) {
                     var keywords = [];
 
                     for (var keyword of body.keywords) {
-                        var kid;
                         try {
-                            var qresult = (await connection.execute("SELECT kid FROM Keyword WHERE bid=? AND keyword=? AND module_version=?", [bid, keyword.word, keyword_model_ver]))[0]; // 쿼리 실행 결과 [row, field]가 나오므로 [0]으로 row만 선택
+                            var kid;
+                            var good_count;
+                            var bad_count;
+
+                            var qresult = (await connection.execute("SELECT kid, good_count, bad_count FROM Keyword WHERE bid=? AND keyword=? AND module_version=?", [bid, keyword.word, keyword_model_ver]))[0]; // 쿼리 실행 결과 [row, field]가 나오므로 [0]으로 row만 선택
 
                             if(qresult.length == 0) {
-                                qresult = await connection.execute("INSERT INTO Keyword(bid, keyword, weight, created_at, module_version) VALUES (?, ?, ?, NOW(), ?)", [bid, keyword.word, keyword.weight, keyword_model_ver]);
+                                var qresult = await connection.execute("INSERT INTO Keyword(bid, keyword, weight, created_at, module_version) VALUES (?, ?, ?, NOW(), ?)", [bid, keyword.word, keyword.weight, keyword_model_ver]);
                                 kid = qresult[0]["insertId"];
+                                good_count = 0;
+                                bad_count = 0;
                             } else {
                                 kid = qresult[0]["kid"];
+                                good_count = qresult[0]["good_count"];
+                                bad_count = qresult[0]["bad_count"];
                             }
 
                             keywords.push({
                                 kid: kid,
-                                keyword: keyword
+                                keyword: keyword,
+                                good_count: good_count,
+                                bad_count: bad_count
                             });
                         } catch(error) {
                             reject(error);
@@ -251,7 +263,7 @@ router.post("/keyword-ext", async function(req, res, next) {
 
     var keywords;
     try {
-        keywords = await keyword_ext(keyword_model_ver, keyword_num, bid, text);
+        keywords = await keyword_ext(keyword_model_ver, keyword_num, keyword_history, bid, text);
     } catch(error) {
         utils.log(logger_caller, error, logger_args, "r");
         return res.sendStatus(400);
@@ -280,20 +292,29 @@ router.post("/keyword-ext", async function(req, res, next) {
                     var main_sentences = [];
 
                     for (var main_sentence of body.main_sentences) {
-                        var sid;
                         try {
-                            var qresult = (await connection.execute("SELECT sid FROM MainSentence WHERE bid=? AND main_sentence=? AND module_version=?", [bid, main_sentence.sentence, main_sentence_model_ver]))[0]; // 쿼리 실행 결과 [row, field]가 나오므로 [0]으로 row만 선택
+                            var sid;
+                            var good_count;
+                            var bad_count;
+
+                            var qresult = (await connection.execute("SELECT sid, good_count, bad_count FROM MainSentence WHERE bid=? AND main_sentence=? AND module_version=?", [bid, main_sentence.sentence, main_sentence_model_ver]))[0]; // 쿼리 실행 결과 [row, field]가 나오므로 [0]으로 row만 선택
 
                             if(qresult.length == 0) {
                                 qresult = await connection.execute("INSERT INTO MainSentence(bid, main_sentence, rank, created_at, module_version) VALUES (?, ?, ?, NOW(), ?)", [bid, main_sentence.sentence, main_sentence.rank, main_sentence_model_ver]);
                                 sid = qresult[0]["insertId"];
+                                good_count = 0;
+                                bad_count = 0;
                             } else {
                                 sid = qresult[0]["sid"];
+                                good_count = qresult[0]["good_count"];
+                                bad_count = qresult[0]["bad_count"];
                             }
 
                             main_sentences.push({
                                 sid: sid,
-                                main_sentence: main_sentence
+                                main_sentence: main_sentence,
+                                good_count: good_count,
+                                bad_count: bad_count
                             });
 
                         } catch(error) {

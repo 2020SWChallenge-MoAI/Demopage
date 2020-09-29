@@ -40,7 +40,7 @@
 
 			<div class="col cell" id="MainSentenceConfigCell">
 				<div class="cell-title">
-					<p>키워드 추출</p>
+					<p>핵심 문장 추출</p>
 				</div>
 				<div class="cell-content">
 					<div class="cell" id="MainSentenceModelVersionCell">
@@ -110,6 +110,69 @@
 						<p>NER</p>
 					</div>
 					<div class="cell-content">
+						<div class="summary"></div>
+						<div class="filter">
+							<div class="options">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-TRM" value="TRM">
+									<label class="form-check-label" for="NER-Tag-TRM">TRM</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-LOC" value="LOC">
+									<label class="form-check-label" for="NER-Tag-LOC">LOC</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-CVL" value="CVL">
+									<label class="form-check-label" for="NER-Tag-CVL">CVL</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-ANM" value="ANM">
+									<label class="form-check-label" for="NER-Tag-ANM">ANM</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-ORG" value="ORG">
+									<label class="form-check-label" for="NER-Tag-ORG">ORG</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-EVT" value="EVT">
+									<label class="form-check-label" for="NER-Tag-EVT">EVT</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-DAT" value="DAT">
+									<label class="form-check-label" for="NER-Tag-DAT">DAT</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-NUM" value="NUM">
+									<label class="form-check-label" for="NER-Tag-NUM">NUM</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-PER" value="PER">
+									<label class="form-check-label" for="NER-Tag-PER">PER</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-TIM" value="TIM">
+									<label class="form-check-label" for="NER-Tag-TIM">TIM</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-AFW" value="AFW">
+									<label class="form-check-label" for="NER-Tag-AFW">AFW</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-FLD" value="FLD">
+									<label class="form-check-label" for="NER-Tag-FLD">FLD</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-MAT" value="MAT">
+									<label class="form-check-label" for="NER-Tag-MAT">MAT</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="checkbox" id="NER-Tag-PLT" value="PLT">
+									<label class="form-check-label" for="NER-Tag-PLT">PLT</label>
+								</div>
+							</div>
+							<button type="button" id="NER-Tag-Reset-Btn" class="btn btn-secondary">Reset</button>
+						</div>
+						<div class="word-cloud"></div>
 					</div>
 				</div>
 
