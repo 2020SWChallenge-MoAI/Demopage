@@ -23,6 +23,6 @@ app.get("/ner", (req, res) => { res.render("ner", {nav_choice: 2}); })
 app.get("/qna-valid-chk", (req, res) => { res.render("qna-valid-chk", {nav_choice: 3}); });
 app.get("/", (req, res) => { res.redirect("/keyword-ext") });
 
-app.listen(9000, "0.0.0.0", () => {
-    utils.log("", "Listening at http://0.0.0.0:9000");
+app.listen(9000, "localhost", () => {
+    utils.log("", "Listening at http://localhost:9000");
 })

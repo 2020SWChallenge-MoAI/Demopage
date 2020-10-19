@@ -1,6 +1,5 @@
 var express = require("express");
 var mysql = require("mysql2/promise");
-//var sync_mysql = require("sync-mysql");
 var request = require("request");
 var fs = require("fs");
 var router = express.Router();
@@ -29,7 +28,12 @@ async function saveTextWithNewBID(text, logger_caller, logger_args) {
             });
         }
 
-        bid = (await readdir_promise(path)).filter(x => /^[0-9]+\.txt$/.test(x)).map(x => Number(x.substring(0, x.lastIndexOf(".")))).reduce((a, b) => Math.max(a, b)) + 1;
+        var cur_max_bid = (await readdir_promise(path)).filter(x => /^[0-9]+\.txt$/.test(x)).map(x => Number(x.substring(0, x.lastIndexOf(".")))).reduce((a, b) => Math.max(a, b));
+        if(cur_max_bid < 2000) {
+            bid = 2000;
+        } else {
+            bid = cur_max_bid + 1;
+        }
     } catch(error) {
         utils.log(logger_caller, error, logger_args, "r");
         return res.sendStatus(400);
@@ -182,7 +186,7 @@ router.post("/qna-valid-chk", function(req, res, next) {
 
 router.post("/keyword-ext", async function(req, res, next) {
     var logger_caller = "/api/keyword-ext(POST)";
-    var logger_args = { bid: req.body.bid, keyword_model_ver: req.body.keyword_model_ver, keyword_num: req.body.keyword_num, main_sentence_model_ver: req.body.main_sentence_model_ver, main_sentence_num: req.body.main_sentence_num, text: req.body.text };
+    var logger_args = { bid: req.body.bid, keyword_model_ver: req.body.keyword_model_ver, keyword_num: req.body.keyword_num, keyword_history: req.body.keyword_history, main_sentence_model_ver: req.body.main_sentence_model_ver, main_sentence_num: req.body.main_sentence_num, text: req.body.text };
 
     var bid = req.body.bid;
     var text = req.body.text;
@@ -190,7 +194,13 @@ router.post("/keyword-ext", async function(req, res, next) {
     var keyword_num = req.body.keyword_num;
     var main_sentence_model_ver = req.body.main_sentence_model_ver;
     var main_sentence_num = req.body.main_sentence_num;
-    var keyword_history = [];
+    var keyword_history = req.body.keyword_history;
+
+    if (!keyword_history) {
+        keyword_hitsory = [];
+    } else {
+        keyword_history = keyword_history.split(',');
+    }
 
     if(bid == -1) { //given text is new text -> save
         bid = await saveTextWithNewBID(text, logger_caller, logger_args);
@@ -356,11 +366,86 @@ router.post("/keyword-ext", async function(req, res, next) {
                 if(httpResponse.statusCode != 200) reject(`Http Response Code ${httpResponse.statusCode}`);
                 
                 var word_tags = {};
+                for (var ner of body.ners) {
+                    //var sentence_idx = sentence["sentence_idx"];
+                    var word = ner["word"];
+                    var tag = ner["tag"];
+
+                    if(tag != "O") {
+                        if(Object.keys(word_tags).includes(word)) {
+                            if(Object.keys(word_tags[word]).includes(tag)) {
+                                word_tags[word][tag] += 1;
+                            } else {
+                                word_tags[word][tag] = 1;
+                            }
+                        } else {
+                            word_tags[word] = {};
+                            word_tags[word][tag] = 1;
+                        }
+                    }
+                }
+
+                //sort
+                word_tags_array = [];
+                for(var i = 0; i < Object.keys(word_tags).length; i++) {
+                    var key = Object.keys(word_tags)[i];
+
+                    var tags_array = Object.keys(word_tags[key]).map((x) => [x, word_tags[key][x]]);
+                    tags_array.sort((a, b) => (b[1] - a[1]));
+
+                    word_tags[key] = {};
+                    var total = 0;
+                    for(var item of tags_array) {
+                        word_tags[key][item[0]] = item[1];
+                        total += item[1];
+                    }
+
+                    word_tags_array.push([total, key, word_tags[key]]);
+                }
+
+                word_tags_array.sort((a, b) => (b[0] - a[0]));
+
+                word_tags = [];
+                for(var item of word_tags_array) {
+                    word_tags.push({
+                        word: item[1],
+                        tags: item[2]
+                    });
+                }
+
+                resolve(word_tags);
+            })
+        });
+    }
+
+    var word_tags;
+    try {
+        word_tags = await ner(text);
+    } catch(error) {
+        utils.log(logger_caller, error, logger_args, "r");
+        return res.sendStatus(400);
+    }
+
+    //etri-ner
+    function etri_ner(text) {
+        return new Promise((resolve, reject) => {
+            request({
+                uri: "http://127.0.0.1:9004/",
+                method: "POST",
+                body: {
+                    text: text
+                },
+                json: true
+            }, function(error, httpResponse, body) {
+                if(error) reject(error);
+                if(httpResponse.statusCode != 200) reject(`Http Response Code ${httpResponse.statusCode}`);
+                
+                var word_tags = {};
                 for (var sentence of body.sentences) {
-                    var sentence_idx = sentence["sentence_idx"];
+                    //var sentence_idx = sentence["sentence_idx"];
                     
                     for(var item of sentence["words"]) {
-                        var word_idx = item["word_idx"];
+                        //var word_idx = item["word_idx"];
                         var word = item["word"];
                         var tag = item["tag"];
 
@@ -412,9 +497,9 @@ router.post("/keyword-ext", async function(req, res, next) {
         });
     }
 
-    var word_tags;
+    var etri_word_tags;
     try {
-        word_tags = await ner(text);
+        etri_word_tags = await etri_ner(text);
     } catch(error) {
         utils.log(logger_caller, error, logger_args, "r");
         return res.sendStatus(400);
@@ -423,7 +508,8 @@ router.post("/keyword-ext", async function(req, res, next) {
     return res.status(200).json({
         keywords: keywords,
         main_sentences: main_sentences,
-        word_tags: word_tags
+        word_tags: word_tags,
+        etri_word_tags: etri_word_tags
     })
 });
 

@@ -17,10 +17,27 @@ function kill_all() {
     kill_port "Demo Webserver" "9000"
     kill_port "Keyword Extraction Server" "9001"
     kill_port "NER Server" "9002"
+    kill_port "ETRI API" "9004"
     kill_port "Main Sentence Server" "9003"
 }
 
 trap "kill_all; exit" SIGHUP SIGINT SIGTERM
+
+# check if someone is running the server
+is_using=$(netstat -ntlp 2> /dev/null | grep :9000)
+if [ -n "$is_using" ]; then
+    echo "Someone is already running the server."
+    while true; do
+        read -p "Do you want to force quit it? (y/n)" yn
+        case $yn in
+            [Yy]* ) kill_all; break;;
+            [Nn]* ) exit;;
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+fi
+unset is_using
+unset yn
 
 source activate demo-webserver
 
@@ -30,7 +47,9 @@ python modules/keyword-extraction-server.py&
 
 # Execute NER Module
 kill_port "NER Server" "9002"
+kill_port "ETRI API" "9004"
 python modules/ner-server.py&
+python modules/etri-api.py&
 
 # Execute Main Sentence Extraction Module
 kill_port "Main Sentence Extraction Server" "9003"

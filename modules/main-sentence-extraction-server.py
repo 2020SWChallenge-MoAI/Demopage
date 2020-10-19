@@ -35,11 +35,7 @@ def komoran_tokenizer(sent):
     return words
 
 def getSentenceList(rawText):
-    sentences = []
-    for sentence in kss.split_sentences(rawText):
-        sentences.append(sentence)
-
-    sentences = [x for x in sentences if x]  # 빈 문장 제거
+    sentences = [x for x in rawText.split("\n") if x]
     del sentences[0]  # 첫 문장(제목) 제거
     return sentences
 
@@ -58,6 +54,19 @@ subword_tokenizer_summarizer = KeysentenceSummarizer(
 
 @app.route("/", methods=['POST'])
 def extract():
+    def append_prev_next_sent(full_sent_texts, sent_idx):
+        result = ""
+        
+        if sent_idx > 0:
+            result += full_sent_texts[sent_idx - 1] + "\n"
+            
+        result += full_sent_texts[sent_idx]
+
+        if sent_idx < len(full_sent_texts) - 1:
+            result += "\n" + full_sent_texts[sent_idx + 1]
+        
+        return result
+
     json = request.get_json()
     main_sentence_num = int(json["main_sentence_num"])
     text = json["text"]
@@ -66,16 +75,32 @@ def extract():
     sentences = getSentenceList(text)
 
     if version == "v1.0.0":  # komoran_tokenizer
-        summarize_result = komoran_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num)
+        summarize_result = komoran_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num + 3)
     elif version == "v2.0.0":  # subword_tokenizer
-        summarize_result = subword_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num)
+        summarize_result = subword_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num + 3)
+    elif version == "current":
+        komoran_summarize_result = komoran_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num + 3)
+        subword_summarize_result = subword_tokenizer_summarizer.summarize(sentences, topk=main_sentence_num + 3)
+        summarize_result = sorted(komoran_summarize_result + subword_summarize_result, key=lambda x:x[1])  # sort by rank
 
+    appeared_sent_idx = []
     main_sentences = []
-    for _, rank, sentence in summarize_result:
+    for sent_idx, sent_rank, _ in summarize_result:
+        if len(appeared_sent_idx) == main_sentence_num:  # 필요한 개수 다 채우면 종료
+            break
+        
+        if sent_idx in appeared_sent_idx:  # 이미 등장한 idx는 skip
+            continue
+
         main_sentences.append({
-            "rank": rank,
-            "sentence": sentence
+            "idx": int(sent_idx),
+            "rank": sent_rank,
+            "sentence": append_prev_next_sent(sentences, sent_idx)
         })
+
+        appeared_sent_idx.append(sent_idx - 1)
+        appeared_sent_idx.append(sent_idx)
+        appeared_sent_idx.append(sent_idx + 1)
     
     log([{"rank":float("{:.4f}".format(x["rank"])), "sentence":(x["sentence"][:20] + "...")} for x in main_sentences])
     return {"main_sentences": main_sentences}, 200

@@ -63,6 +63,12 @@ $("#Text").on("change keyup paste", function() {
     $("#BID").val("");
 });
 
+$("#BID").keydown(function(key) {
+    if(key.keyCode == 13) {
+        $("#LoadText-Btn").trigger("click");
+    }
+})
+
 function getBID() {
     var bid = $("#BID").val();
 

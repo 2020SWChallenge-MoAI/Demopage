@@ -18,23 +18,29 @@ body > div {
     flex-flow: column;
 }
 
-div.content {
+#LeftRightAreaContainer {
+    padding-top: 10px;
+    padding-bottom: 10px;
     flex: 2;
     overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
 }
 
-div.content > div.row {
-    height: 100%;
-    max-height: 100%;
-    min-height: 100%;
-    overflow: hidden;
-}
-
-div.content > div.row > div.col {
+#LeftArea,
+#RightArea {
+    padding-left: 10px;
+    padding-right: 10px;
     height: 100%;
     max-height: 100%;
     min-height: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+#ToggleLeftAreaBtnContainer {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #LeftArea div.cell {
@@ -49,12 +55,18 @@ div.content > div.row > div.col {
     flex: 2;
 }
 
-.d-flex > .flex-even {
-    flex: 1;
+#LeftArea div.cell div.cell-title div.load-text-control {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    column-gap: 5px;
 }
 
-.content {
-    padding: 15px;
+#LeftArea div.cell div.cell-title div.load-text-btns-cell {
+    display: flex;
+}
+
+.d-flex > .flex-even {
+    flex: 1;
 }
 
 .cell {
@@ -77,14 +89,6 @@ div.content > div.row > div.col {
     font-size: 1.1em;
 }
 
-.cell .cell-content {
-    margin-bottom: 0px;
-}
-
-.textarea {
-    height: 100%;
-}
-
 #Text {
     resize: none;
     min-height: 100%;
@@ -104,19 +108,15 @@ div.content > div.row > div.col {
     margin-left: 10px;
 }
 
-#ResultCell-Success > div.cell-content > div.cell > div.cell-content {
+#KeywordCell > div.cell-content,
+#NERCell > div.cell-content,
+#MainSentenceCell > div.cell-content {
     padding-left: 10px;
 }
 
-#ResultCell-Success > div.cell-content > div.cell > div.cell-content > div {
+#KeywordCell > div.cell-content > div.input-group,
+#MainSentenceCell > div.cell-content > div.input-group {
     margin-bottom: 5px;
-}
-
-#ResultCell-Success pre {
-    background-color: #e9ecef;
-    padding: 0.375rem 0.75rem;
-    border: 1px solid #343a40;
-    border-radius: 0.25rem;
 }
 
 #Sentence > div {
@@ -125,10 +125,6 @@ div.content > div.row > div.col {
 
 #SentenceCell > div.cell-content > div.sentence-nav-btns {
     margin-top: 15px;
-}
-
-#LeftArea div.cell div.cell-title div.load-text-btns-cell {
-    display: flex;
 }
 
 input[type=number].input-number-no-control::-webkit-outer-spin-button,
@@ -140,19 +136,14 @@ input[type=number].input-number-no-control {
     -moz-appearance: textfield;
 }
 
-#LeftArea div.cell div.cell-title div.load-text-control {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    column-gap: 5px;
-}
-
-#NERCell div.cell-content {
+#NERCell div.cell-content,
+#ETRINERCell div.cell-content {
     line-height: 2em;
 }
 
-#NERCell div.cell-content span.word-tag {
-    padding-top: 3px;
-    padding-bottom: 3px;
+#NERCell div.cell-content span.word-tag,
+#ETRINERCell div.cell-content span.word-tag {
+    display: inline-block;
     padding-left: 8px;
     padding-right: 8px;
     border-radius: calc(0.5em + 6px);
@@ -161,91 +152,94 @@ input[type=number].input-number-no-control {
     white-space: nowrap;
 }
 
-#NERCell div.cell-content span.word-tag.tag-TRM,
-#NERCell div.cell-content span.word-tag.tag-TRM-B,
-#NERCell div.cell-content span.word-tag.tag-TRM-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-TRM,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-TM {
     background-color: lightblue;
 }
 
-#NERCell div.cell-content span.word-tag.tag-LOC,
-#NERCell div.cell-content span.word-tag.tag-LOC-B,
-#NERCell div.cell-content span.word-tag.tag-LOC-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-LOC,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-LC {
     background-color: yellow;
 }
 
-#NERCell div.cell-content span.word-tag.tag-CVL,
-#NERCell div.cell-content span.word-tag.tag-CVL-B,
-#NERCell div.cell-content span.word-tag.tag-CVL-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-CVL,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-CV {
     background-color: lightcoral;
 }
 
-#NERCell div.cell-content span.word-tag.tag-ANM,
-#NERCell div.cell-content span.word-tag.tag-ANM-B,
-#NERCell div.cell-content span.word-tag.tag-ANM-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-ANM,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-AM {
     background-color: lightgray;
 }
 
-#NERCell div.cell-content span.word-tag.tag-ORG,
-#NERCell div.cell-content span.word-tag.tag-ORG-B,
-#NERCell div.cell-content span.word-tag.tag-ORG-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-BDY,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-AM {
+    background-color: darkgrey;
+}
+
+#NERCell div.cell-content span.word-tag.dominant-tag-ORG,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-OG {
     background-color: lightcyan;
 }
 
-#NERCell div.cell-content span.word-tag.tag-EVT,
-#NERCell div.cell-content span.word-tag.tag-EVT-B,
-#NERCell div.cell-content span.word-tag.tag-EVT-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-EVT,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-EV {
     background-color: lightgreen;
 }
 
-#NERCell div.cell-content span.word-tag.tag-DAT,
-#NERCell div.cell-content span.word-tag.tag-DAT-B,
-#NERCell div.cell-content span.word-tag.tag-DAT-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-DAT,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-DT {
     background-color: lightpink;
 }
 
-#NERCell div.cell-content span.word-tag.tag-NUM,
-#NERCell div.cell-content span.word-tag.tag-NUM-B,
-#NERCell div.cell-content span.word-tag.tag-NUM-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-NUM,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-QT {
     background-color: lightgoldenrodyellow;
 }
 
-#NERCell div.cell-content span.word-tag.tag-PER,
-#NERCell div.cell-content span.word-tag.tag-PER-B,
-#NERCell div.cell-content span.word-tag.tag-PER-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-PER,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-PS {
     background-color: lightskyblue;
 }
 
-#NERCell div.cell-content span.word-tag.tag-TIM,
-#NERCell div.cell-content span.word-tag.tag-TIM-B,
-#NERCell div.cell-content span.word-tag.tag-TIM-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-TIM,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-TI {
     background-color: lightseagreen;
 }
 
-#NERCell div.cell-content span.word-tag.tag-AFW,
-#NERCell div.cell-content span.word-tag.tag-AFW-B,
-#NERCell div.cell-content span.word-tag.tag-AFW-I {
-    background-color: lightyellow;
+#NERCell div.cell-content span.word-tag.dominant-tag-AFW,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-AF {
+    background-color: palevioletred;
 }
 
-#NERCell div.cell-content span.word-tag.tag-FLD,
-#NERCell div.cell-content span.word-tag.tag-FLD-B,
-#NERCell div.cell-content span.word-tag.tag-FLD-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-FLD,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-FD {
     background-color: lightsalmon;
 }
 
-#NERCell div.cell-content span.word-tag.tag-MAT,
-#NERCell div.cell-content span.word-tag.tag-MAT-B,
-#NERCell div.cell-content span.word-tag.tag-MAT-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-MAT,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-MT {
     background-color: lightsteelblue;
 }
 
-#NERCell div.cell-content span.word-tag.tag-PLT,
-#NERCell div.cell-content span.word-tag.tag-PLT-B,
-#NERCell div.cell-content span.word-tag.tag-PLT-I {
+#NERCell div.cell-content span.word-tag.dominant-tag-PLT,
+#ETRINERCell div.cell-content span.word-tag.dominant-tag-PT {
     background-color: lightslategray;
 }
 
-#NERCell div.cell-content div.filter {
+#NERCell div.cell-content div.filter,
+#ETRINERCell div.cell-content div.filter {
     display: grid;
     grid-template-columns: 1fr auto;
 }
+
+#ToggleNERSummaryBtn,
+#ToggleNERFilterBtn,
+#ToggleETRINERSummaryBtn,
+#ToggleETRINERFilterBtn {
+    margin-left: 10px;
+    cursor: pointer;
+    color: lightgray;
+}
+
+
