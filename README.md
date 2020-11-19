@@ -15,7 +15,7 @@ MoAI Ttokdok 기술 시연 데모 페이지
 다음 명령어로 필요한 패키지들을 설치한다.
 
 ```
-npm install
+$ npm install
 ```
 
 ## How to Run
@@ -23,5 +23,5 @@ npm install
 다음 명령어로 Ttokdok Demopage를 실행한다.
 
 ```
-./run
+$ ./run
 ```
