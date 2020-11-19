@@ -1,26 +1,49 @@
 {
-  "name": "demo-webserver",
-  "version": "1.0.0",
-  "description": "a demo webserver for ttokdok",
-  "main": "server.js",
+  "name": "ttokdok-demopage",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/2020SWChallenge-MoAI/demo-webserver.git"
-  },
-  "author": "moai",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/2020SWChallenge-MoAI/demo-webserver/issues"
-  },
-  "homepage": "https://github.com/2020SWChallenge-MoAI/demo-webserver#readme",
   "dependencies": {
-    "ejs-locals": "^1.0.2",
-    "express": "^4.17.1",
-    "moment-timezone": "^0.5.31",
-    "mysql2": "^2.2.5",
-    "request": "^2.88.2"
-  }
+    "core-js": "^3.6.5",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/vue-fontawesome": "^2.0.0",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^7.0.0-0",
+    "node-sass": "^5.0.0",
+    "sass-loader": "^10.0.5"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }
