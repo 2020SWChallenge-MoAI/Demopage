@@ -8,7 +8,7 @@ MoAI Ttokdok 기술 시연 데모 페이지
 
 - Vue.js를 이용해 개발됨
 - 3000번 포트에서 실행됨(다른 포트에서 실행되게 하고 싶으면 `vue.config.js` 파일을 수정한다)
-- nipa 서버 7002번 포트(`14.49.45.139:7002`)에서 Ttokdok API Server가 실행 중이어야 한다(다른 URL을 사용할 경우 `vue.config.js` 파일을 수정한다).
+- 7002번 포트에서 Ttokdok API Server가 실행 중이어야 한다(다른 URL을 사용할 경우 `vue.config.js` 파일을 수정한다).
 
 ## How to Install
 
